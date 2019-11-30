@@ -1,4 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+
+export class documentData {
+  title: string = "Empty Title";
+  packages: Array<string> = [];
+  keywords: Array<string> = [];
+
+  constructor(title: string) {
+    this.title = title;
+  }
+}
 
 @Component({
   selector: 'app-detailview',
@@ -7,7 +18,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DetailviewComponent implements OnInit {
 
-  constructor() { }
+  data: documentData = new documentData("Klausuraufgabe");
+
+  documentForm = new FormGroup({
+    title: new FormControl(''),
+    packages: new FormControl(''),
+    keywords: new FormControl(''),
+  })
+
+  constructor() {
+   }
 
   ngOnInit() {
   }

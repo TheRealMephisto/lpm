@@ -1,0 +1,16 @@
+@import 'main.scss';
+
+.explorer-list {
+    list-style: none;
+    padding: 0;
+
+    li {
+        border: 1px solid $primary;
+        margin: 2vh 1vw 2vh 1vw;
+    }
+
+    li:hover {
+        background-color: $secondary;
+        color: $inverse;
+    }
+}

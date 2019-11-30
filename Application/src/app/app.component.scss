@@ -1,0 +1,19 @@
+@import 'main.scss';
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.explorer {
+    width: 49vw;
+    height: 80vh;
+    border: 1px dashed $primary;
+}
+
+.detailview {
+    width: 49vw;
+    height: 80vh;
+    border: 1px dashed $primary;
+}
