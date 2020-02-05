@@ -1,15 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, SimpleChange } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-
-export class documentData {
-  title: string = "Empty Title";
-  packages: Array<string> = [];
-  keywords: Array<string> = [];
-
-  constructor(title: string) {
-    this.title = title;
-  }
-}
+import { TeXDocument } from '../texdocument';
 
 @Component({
   selector: 'app-detailview',
@@ -18,7 +9,7 @@ export class documentData {
 })
 export class DetailviewComponent implements OnInit {
 
-  data: documentData = new documentData("Klausuraufgabe");
+  @Input() selectedDocument: TeXDocument;
 
   documentForm = new FormGroup({
     title: new FormControl(''),
@@ -30,6 +21,23 @@ export class DetailviewComponent implements OnInit {
    }
 
   ngOnInit() {
+  }
+
+  ngOnChange(change: SimpleChange) {
+    console.log(change);
+  }
+
+  compile() {
+    console.log(this.selectedDocument);
+  }
+
+  openTexFile() {
+    console.log(this.selectedDocument.rawDataPath);
+    window.open(this.selectedDocument.rawDataPath, "_blank");
+  }
+
+  openPdfFile() {
+    window.open(this.selectedDocument.outputPath, "_blank")
   }
 
 }

@@ -1,39 +1,82 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, Input, EventEmitter, SimpleChange } from '@angular/core';
 
-import {FormControl, FormGroup} from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { MatTableDataSource, MatPaginator } from '@angular/material';
+import { trigger, state, style, animate, transition } from '@angular/animations';
+
+import { sampleExercises } from '../sample-data';
+import { TeXDocument } from '../texdocument';
+
+export interface PeriodicElement {
+  title: string;
+  version: number;
+  creationDate: string;
+}
+
+
+const ELEMENT_DATA: PeriodicElement[] = [
+  { title : sampleExercises[0].title,
+    version: sampleExercises[0].version,
+    creationDate: sampleExercises[0].getDateString()
+  },
+  { title : sampleExercises[1].title,
+    version: sampleExercises[1].version,
+    creationDate: sampleExercises[1].getDateString()
+  },
+  { title : sampleExercises[2].title,
+    version: sampleExercises[2].version,
+    creationDate: sampleExercises[2].getDateString()
+  },
+];
 
 @Component({
   selector: 'app-explorer',
   templateUrl: './explorer.component.html',
-  styleUrls: ['./explorer.component.scss']
+  styleUrls: ['./explorer.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class ExplorerComponent implements OnInit {
 
-  explorerFormControl = new FormControl();
-  options: string[] = ['one', 'two', 'three'];
-  filteredOptions: Observable<string[]>;
+  @Input() selectedDocument: TeXDocument;
+  @Output() selectedDocumentChange: EventEmitter<TeXDocument> = new EventEmitter<TeXDocument>();
 
-  items = [
-    { title: "test1" },
-    { title: "test2" },
-    { title: "test3" }
-  ];
+  explorerFormControl = new FormControl();
+
+  displayedColumns: string[] = ['title', 'version', 'creationDate'];
+  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  expandedElement: PeriodicElement | null;
+
+  selectedRow: PeriodicElement | null;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor() { }
 
   ngOnInit() {
-    this.filteredOptions = this.explorerFormControl.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value))
-    );
+    this.dataSource.paginator = this.paginator;
   }
 
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    console.log(filterValue);
+  }
 
-    return this.options.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
+  ngOnChange(change: SimpleChange) {
+    console.log(change);
+  }
+
+  public onClick(row) {
+    this.selectedRow = this.selectedRow === row ? null : row;
+    let selectedDocument = sampleExercises.find((x) => x.title == this.selectedRow.title && x.version == this.selectedRow.version);
+    this.selectedDocumentChange.emit(selectedDocument);
   }
 
 }

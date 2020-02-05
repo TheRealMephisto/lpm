@@ -12,12 +12,19 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material'
+import {MatInputModule} from '@angular/material';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+
+import { ExerciseCompilerComponent } from './exercise-compiler/exercise-compiler.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ExplorerComponent,
-    DetailviewComponent
+    DetailviewComponent,
+    ExerciseCompilerComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +34,11 @@ import {MatTableModule} from '@angular/material/table';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatAutocompleteModule,
-    MatTableModule
+    MatTableModule,
+    MatPaginatorModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

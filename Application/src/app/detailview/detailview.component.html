@@ -1,2 +1,48 @@
-<h2>{{data.title}}</h2>
 
+<div class="detailview-container">
+    <div>
+        <h4>Subject:</h4>
+        <p></p>
+    </div>
+        
+    <div>
+        <h4>Title:</h4>
+        <p>{{selectedDocument.title}}</p>
+    </div>
+    
+    <div>
+        <h4>Version:</h4>
+        <p>{{selectedDocument.version}}</p>
+    </div>
+    
+    <div>
+        <h4>Keywords:</h4>
+        <ul>
+            <li *ngFor="let keyword of selectedDocument.keywords">{{keyword}}</li>
+            <li><button mat-raised-button color="accent" (click)="appendToArray($event)">Add</button></li>
+        </ul>
+    </div>
+    
+    <div>
+        <h4>Used packages:</h4>
+        <ul>
+            <li *ngFor="let package of selectedDocument.packages">{{package}}</li>
+            <li><button mat-raised-button color="accent" (click)="appendToArray($event)">Add</button></li>
+        </ul>
+    </div>
+    
+    <div style="width: 100%; display: inline-flex; justify-content: left; align-content: center;">
+        <h4>TeX-File:</h4>
+        <p>{{selectedDocument.rawDataPath}}</p>
+    </div>
+    
+    <div style="width: 100%; display: inline-flex; justify-content: space-around;">
+        <button mat-mini-fab (click)="compile()"><mat-icon>build</mat-icon></button>
+        <p>Compile!</p>
+    </div>
+    
+    <div style="display: inline-flex; justify-content: space-around;">
+        <h4>PDF-File:</h4>
+        <p>{{selectedDocument.outputPath}}</p>
+    </div>
+</div>
