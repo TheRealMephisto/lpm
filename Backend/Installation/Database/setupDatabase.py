@@ -62,9 +62,13 @@ if __name__ == "__main__":
         "information" : "CREATE TABLE information (id INT AUTO_INCREMENT PRIMARY KEY, information TEXT, informationTypeId INT)",
         "informationType" : "CREATE TABLE informationType (id INT AUTO_INCREMENT PRIMARY KEY, type VARCHAR(255))",
         "files" : "CREATE TABLE files (id INT AUTO_INCREMENT PRIMARY KEY, path TEXT)",
-        "contentRfiles" : "CREATE TABLE contentRfiles (id INT AUTO_INCREMENT PRIMARY KEY, contentID INT, fileID INT)",
+        "contentRfiles" : "CREATE TABLE contentRfiles (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, fileId INT)",
+        "contentRinformation" : "CREATE TABLE contentRinformation (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, informationId INT)",
+        "contentRpackages" : "CREATE TABLE contentRpackages (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, packageId INT)",
         #"fileTypes" : "CREATE TABLE fileTypes (id INT AUTO_INCREMENT PRIMARY KEY, type VARCHAR(255))",
-        "packages" : "CREATE TABLE packages (id INT AUTO_INCREMENT PRIMARY KEY, package VARCHAR(255), options VARCHAR(255))",
+        "packages" : "CREATE TABLE packages (id INT AUTO_INCREMENT PRIMARY KEY, package VARCHAR(255))",
+        "packageRoptions": "CREATE TABLE packageRoptions (id INT AUTO_INCREMENT PRIMARY KEY, packageId INT, optionId INT)",
+        "packageOptions": "CREATE TABLE packageOptions (id INT AUTO_INCREMENT PRIMARY KEY, option VARCHAR(255))",
         "editHistory" : "CREATE TABLE editHistory (id INT AUTO_INCREMENT PRIMARY KEY, date DATE, userId INT)",
         "users" : "CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255))"
     }
