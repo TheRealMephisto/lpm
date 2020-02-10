@@ -16,6 +16,7 @@ import {MatPaginatorModule} from '@angular/material'
 import {MatInputModule} from '@angular/material';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import { HttpClientModule } from '@angular/common/http';
 
 import { ExerciseCompilerComponent } from './exercise-compiler/exercise-compiler.component';
 
@@ -28,6 +29,7 @@ import { ExerciseCompilerComponent } from './exercise-compiler/exercise-compiler
   ],
   imports: [
     BrowserModule,
+    HttpClientModule, // always import after BrowserModule
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,

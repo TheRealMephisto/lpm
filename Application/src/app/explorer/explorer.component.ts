@@ -8,6 +8,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 
 import { sampleExercises } from '../sample-data';
 import { TeXDocument } from '../texdocument';
+import { DataService } from '../data.service';
 
 export interface PeriodicElement {
   title: string;
@@ -56,9 +57,9 @@ export class ExplorerComponent implements OnInit {
 
   selectedRow: PeriodicElement | null;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator; // static: true -> make it available during ngOnInit
 
-  constructor() { }
+  constructor(private dataService: DataService) { }
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
@@ -77,6 +78,11 @@ export class ExplorerComponent implements OnInit {
     this.selectedRow = this.selectedRow === row ? null : row;
     let selectedDocument = sampleExercises.find((x) => x.title == this.selectedRow.title && x.version == this.selectedRow.version);
     this.selectedDocumentChange.emit(selectedDocument);
+  }
+
+  public addNewContent() {
+    console.log("button pressed, asking dataService to add content")
+    this.dataService.addNewContent();
   }
 
 }
