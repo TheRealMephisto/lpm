@@ -1,3 +1,5 @@
+import { TeXPackage } from './texpackage';
+
 export class TeXDocument {
 
     /**
@@ -22,9 +24,9 @@ export class TeXDocument {
      */
     public keywords: Array<string>;
     /**
-     * Packages needed to compile the exercise (LaTeX)
+     * Packages and options needed to compile the exercise (LaTeX)
      */
-    public packages: Array<string>;
+    public packages: Array<TeXPackage>;
     /**
      * Path of the folder, containing .tex and needed files (like .jpg). Needs to contain a content_main.tex!
      */
@@ -40,7 +42,7 @@ export class TeXDocument {
         version: number = 0,
         creationDate: Date = new Date(),
         keywords: Array<string> = [""],
-        packages: Array<string> = [""],
+        packages: Array<TeXPackage> = [],
         rawDataPath: string = "",
         outputPath: string = ""
     ) {

@@ -26,7 +26,7 @@
     <div>
         <h4>Used packages:</h4>
         <ul>
-            <li *ngFor="let package of selectedDocument.packages">{{package}}</li>
+            <li *ngFor="let package of selectedDocument.packages">{{package.name}}</li>
             <li><button mat-raised-button color="accent" (click)="appendToArray($event)">Add</button></li>
         </ul>
     </div>

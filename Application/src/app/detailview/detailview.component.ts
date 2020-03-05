@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, SimpleChange } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { TeXDocument } from '../texdocument';
+import { TeXDocument } from '../model/texdocument';
 
 @Component({
   selector: 'app-detailview',

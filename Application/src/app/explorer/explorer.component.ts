@@ -7,7 +7,7 @@ import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 
 import { sampleExercises } from '../sample-data';
-import { TeXDocument } from '../texdocument';
+import { TeXDocument } from '../model/texdocument';
 import { DataService } from '../data.service';
 
 export interface PeriodicElement {

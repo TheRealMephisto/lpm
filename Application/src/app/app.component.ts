@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TeXDocument } from './texdocument';
+import { TeXDocument } from './model/texdocument';
 
 @Component({
   selector: 'app-root',
