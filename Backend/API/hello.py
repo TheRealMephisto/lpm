@@ -1,5 +1,6 @@
 from flask import Flask, request
-import modifyDB as util
+import modifyDB as dbUtil
+import argumentHelper as argUtil
 
 app = Flask(__name__)
 
@@ -15,8 +16,30 @@ def addEntry():
         print(entry)
     else:
         entry = request.args.get('entry')
-        util.test()
-        print(entry)
+
+        title = request.args.get('title')
+        path = request.args.get('path')
+        username = request.args.get('username')
+        filePathListRaw = request.args.get('filePathList') # Lists will be strings with , as separator
+        informationListRaw = request.args.get('informationList')
+        informationTypeListRaw = request.args.get('informationTypeList')
+        packageListRaw = request.args.get('packageList')
+        packageOptionsListRaw = request.args.get('packageOptionsList')
+        #return ''.join(str(e) for e in [title, "\n", path, username, filePathListRaw, informationListRaw, informationTypeListRaw, packageListRaw, packageOptionsListRaw])
+        filePathList = argUtil.stringToList(filePathListRaw)
+        informationList = argUtil.stringToList(informationListRaw)
+        informationTypeList = argUtil.stringToList(informationTypeListRaw)
+        packageList = argUtil.stringToList(packageListRaw)
+        packageOptionsList = list()
+        tmpPackageOptionsList = argUtil.stringToList(packageOptionsListRaw, ';')
+        for packageOptionsRaw in tmpPackageOptionsList:
+            packageOptionsList.append(argUtil.stringToList(packageOptionsRaw))
+        # ToDo: Convert the raw strings into lists
+
+
+        dbUtil.addEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
+        #dbUtil.test()
+    #return entry
     return "New Entry!"
 
 if __name__ == '__main__':

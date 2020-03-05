@@ -209,7 +209,7 @@ def removeEntry(Id):
 def test():
     addEntry("testtitle", "testpath", "testusername", ["testfilepath"], ["infotest"], ["infotesttype2"], ["testpkg2"], ["testopt2"])
     addEntry("testtitle2", "testpath2", "testusername", ["testfilepath"], ["infotest"], ["infotesttype2"], ["testpkg2"], ["testopt2"])
-    addEntry("testtitle3", "testpath3", "testusername", ["testfilepath", "2", "3"], ["infotest", "2", "3"], ["infotesttype2", "2", "3"], ["testpkg2", "2", "3"], [["testopt2", "2", "3"], ["testopt4", "5", "6"], ["testopt3", "7", "8"]])
+    addEntry("testtitle3", "testpath3", "testusername", ["testfilepath1", "testfilepath2", "testfilepath3"], ["infotest1", "infotest2", "infotest3"], ["infotesttype1", "infotesttype2", "infotesttype3"], ["testpkg1", "testpkg2", "testpkg3"], [["testopt1", "testopt2", "testopt3"], ["testopt4", "testopt5", "testopt6"], ["testopt3", "testopt7", "testopt8"]])
 
 
 if __name__ == "__main__":
