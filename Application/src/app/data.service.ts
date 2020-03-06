@@ -6,13 +6,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 })
 export class DataService {
 
-  url: string = 'http://127.0.0.1:1337';
+  url: string = 'http://127.0.0.1:1337/api';
 
   constructor(private http: HttpClient) { }
 
   public addNewContent(){
-    console.log("Hi! I'm here!");
-    //console.log(this.http.get(this.url + '/addEntry'));
     let title: string = "AwesomeTitle";
     let path: string = "AwesomePath";
     let username: string = "AwesomeName";
@@ -21,6 +19,7 @@ export class DataService {
     let informationTypeList: string = "AwesomeInfoType1,AwesomeInfoType2";
     let packageList: string = "AwesomePackage1,AwesomePackage2";
     let packageOptionsList: string = "AwesomeOpt1,AwesomeOpt2;AwesomeOpt3,AwesomeOpt4";
+
     let params: HttpParams = new HttpParams()
                                 .set('title', title)
                                 .set('path', path)
@@ -31,11 +30,12 @@ export class DataService {
                                 .set('packageList', packageList)
                                 .set('packageOptionsList', packageOptionsList);
     console.log("params: ", params);
-    let obs = this.http.get(this.url + '/addEntry', { params: params });
+    let obs = this.http.get(this.url + '/addEntry', {
+      params: params
+    });
     obs.subscribe(data => {
       console.log(data);
     });
-    //this.http.get(this.url + '/addEntry?title=' + title + '&path=' + path + '&username=' + username + '&filePathList=' + filePathList + '&informationList=' + informationList + '&informationTypeList=' + informationTypeList + '&packageList=' + packageList + '&packageOptionsList=' + packageOptionsList)
     
   }
 }

@@ -1,14 +1,16 @@
 from flask import Flask, request
+from flask_cors import CORS
 import modifyDB as dbUtil
 import argumentHelper as argUtil
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}}) # intermediate, adjust for production! Just needed for development on local machine.
 
 @app.route("/")
 def index():
     return ("Hello World")
 
-@app.route("/addEntry", methods=['POST', 'GET'])
+@app.route("/api/addEntry", methods=['POST', 'GET'])
 def addEntry():
     entry = ""
     if request.method == 'POST':
@@ -40,7 +42,7 @@ def addEntry():
         dbUtil.addEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
         #dbUtil.test()
     #return entry
-    return "New Entry!"
+    return {'output': 'New Entry!'}
 
 if __name__ == '__main__':
     app.run(port="1337", debug=True)
