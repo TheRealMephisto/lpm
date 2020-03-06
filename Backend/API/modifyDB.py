@@ -198,6 +198,35 @@ def addEntry(title, path, username, filePathList, informationList, informationTy
             procedureProtocol['databaseTableStatuses']['packages'][str(i)] = 'Successfully added entry: ' + str(dataDictToAdd)
         else:
             procedureProtocol['databaseTableStatuses']['packages'][str(i)] = 'Entry existed already: ' + str(dataDictToAdd)
+        packageIds.append(packageId)
+
+        procedureProtocol['databaseTableStatuses']['packageOptions'][str(i)] = dict()
+        packageOptionIds.append(list())
+
+        for j in range(0, len(packageOptionsList[i])):
+            dataDictToAdd = {'option' : packageOptionsList[i][j]}
+            packageOptionId = getIdOfDataInTable(myCursor, 'packageOptions', dataDictToAdd)
+            if packageOptionId == -1:
+                insertDataIntoTable(myCursor, 'packageOptions', dataDictToAdd)
+                packageOptionId = getIdOfDataInTable(myCursor, 'packageOptions', dataDictToAdd)
+                procedureProtocol['databaseTableStatuses']['packageOptions'][str(i)][str(j)] = 'Successfully added entry: ' + str(dataDictToAdd)
+            else:
+                procedureProtocol['databaseTableStatuses']['packageOptions'][str(i)][str(j)] = 'Entry existed already: ' + str(dataDictToAdd)
+            packageOptionIds[i].append(packageId)
+    
+    # Add relations from packages to package options
+    procedureProtocol['databaseTableStatuses']['packageRoptions'] = dict()
+    for i in range(0, packageId):
+        dataDictToAdd = {'packageId' : packageIds[i], 'optionId' : packageOptionIds[i]}
+        relationId = getIdOfDataInTable(myCursor, 'packageRoptions', dataDictToAdd)
+        if relationId == -1:
+            insertDataIntoTable(myCursor, 'packageRoptions', dataDictToAdd)
+            relationId = getIdOfDataInTable(myCursor, 'packageRoptions', dataDictToAdd)
+            procedureProtocol['databaseTableStatuses']['packageRoptions'][str(i)] = 'Successfully added entry: ' + str(dataDictToAdd)
+        else:
+            procedureProtocol['databaseTableStatuses']['packageRoptions'][str(i)] = 'Entry existed already: ' + str(dataDictToAdd)
+            
+    # todo
 
     # Add file paths if not already existing
     fileIds = list()
@@ -208,11 +237,16 @@ def addEntry(title, path, username, filePathList, informationList, informationTy
             fileId = getFileId(myCursor, filePath)
         fileIds.append(fileId)
 
-    # Add contentRfile entry and contentRinformation entry
+    # Add contentRfiles, contentRinformation and contentRpackages entry
     for fileId in fileIds:
-        insertContentRFile(myCursor, contentId, fileId)    
+        dataDictToAdd = {'contentId' : contentId, 'fileId' : fileId}
+        insertDataIntoTable(myCursor, 'contentRfiles', dataDictToAdd)
     for informationId in informationIds:
-        insertContentRInformation(myCursor, contentId, informationId)
+        dataDictToAdd = {'contentId' : contentId, 'informationId' : informationId}
+        insertDataIntoTable(myCursor, 'contentRinformation', dataDictToAdd)
+    for packageId in packageIds:
+        dataDictToAdd = {'contentId' : contentId, 'packageId' : packageId}
+        insertDataIntoTable(myCursor, 'contentRpackages', dataDictToAdd)
 
     mydbConnector.commit()
     mydbConnector.close()
