@@ -27,7 +27,7 @@ def addEntry():
         informationTypeListRaw = request.args.get('informationTypeList')
         packageListRaw = request.args.get('packageList')
         packageOptionsListRaw = request.args.get('packageOptionsList')
-        #return ''.join(str(e) for e in [title, "\n", path, username, filePathListRaw, informationListRaw, informationTypeListRaw, packageListRaw, packageOptionsListRaw])
+        
         filePathList = argUtil.stringToList(filePathListRaw)
         informationList = argUtil.stringToList(informationListRaw)
         informationTypeList = argUtil.stringToList(informationTypeListRaw)
@@ -38,10 +38,8 @@ def addEntry():
             packageOptionsList.append(argUtil.stringToList(packageOptionsRaw))
 
 
-        dbUtil.addEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
-        #dbUtil.test()
-    #return entry
-    return {'output': 'New Entry!'}
+        procedureProtocol = dbUtil.addEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
+    return {'output': 'New Entry!', 'procedureProtocol': procedureProtocol}
 
 if __name__ == '__main__':
     app.run(port="1337", debug=True)
