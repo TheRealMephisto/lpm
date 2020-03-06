@@ -34,30 +34,6 @@ def getCursor(MyDBConnector):
 def disconnect():
     pass
 
-'''
-    Check information type table and retrieve Id, if existing.
-    Returns -1 if not existing.
-'''
-def getInformationTypeId(myCursor, informationType):
-    myCursor.execute("SELECT * FROM `informationType` WHERE `type` = '" + informationType + "';")
-    results = myCursor.fetchall()
-    if len(results) > 0:
-        return results[0][0]
-    return -1
-
-def insertInformationType(myCursor, informationType):
-    myCursor.execute("INSERT INTO `informationType` (`id`, `type`) VALUES (NULL, '" + informationType + "');")
-
-def getInformationId(myCursor, information):
-    myCursor.execute("SELECT * FROM `information` WHERE `information` = '" + information + "';")
-    results = myCursor.fetchall()
-    if len(results) > 0:
-        return results[0][0]
-    return -1
-
-def insertInformation(myCursor, information, informationTypeId):
-    myCursor.execute("INSERT INTO `information` (`id`, `information`, `informationTypeId`) VALUES (NULL, '" + information + "', '" + str(informationTypeId) + "');")
-
 def getPackageId(myCursor, package):
     myCursor.execute("SELECT * FROM `packages` WHERE `package` = '" + package + "'")
     results = myCursor.fetchall()
@@ -121,69 +97,107 @@ def insertContentRPackage(myCursor, contentId, packageId):
 def insertContentRInformation(myCursor, contentId, informationId):
     myCursor.execute("INSERT INTO `contentRinformation` (`id`, `contentId`, `informationId`) VALUES (NULL, " + str(contentId) + ", " + str(informationId) + ");")
 
-def getContentId(myCursor, title, path, date = getTodaysSqlTimestamp()):
-    myCursor.execute("SELECT * FROM `contents` WHERE `title` = '" + title + "' AND `creationDate` = '" + date + "' AND `path` = '" + path + "';")
+'''
+    tableName is a string
+    valueDict is a dictionary containing the column names as keys and the values as values.
+'''
+def getIdOfDataInTable(myCursor, tableName, valueDict):
+    command = "SELECT * FROM `" + tableName + "`"
+    initialCommandLength = len(command)
+    for key in valueDict:
+        command += " AND " if len(command) > initialCommandLength else " WHERE "
+        command += "`" + key + "` = '" + str(valueDict[key]) + "'"
+    command += ";"
+    myCursor.execute(command)
     results = myCursor.fetchall()
     if len(results) > 0:
         return results[0][0]
     return -1
 
-def insertContent(myCursor, title, path, date = getTodaysSqlTimestamp()):
-    myCursor.execute("INSERT INTO `contents` (`id`, `title`, `creationDate`, `path`) VALUES (NULL, '" + title + "', '" + date + "', '" + path + "');")
+'''
+    tableName is a string
+    valueDict is a dictionary containing the column names as keys and the values as values.
+'''
+def insertDataIntoTable(myCursor, tableName, valueDict):
+    command = "INSERT INTO `" + tableName + "`(`id`"
+    valueString = "NULL"
+    for key in valueDict:
+        command += ", `" + str(key) + "`"
+        valueString += ", '" + str(valueDict[key]) + "'"
+    command += ") VALUES (" + valueString + ");"
+    myCursor.execute(command)
+
 
 def addEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList):
     mydbConnector = connectDB()
     myCursor = getCursor(mydbConnector)
+    
+    procedureProtocol = dict()
+    procedureProtocol['databaseTableStatuses'] = dict()
 
     # Add content
-    contentId = getContentId(myCursor, title, path)
+    dataDictToAdd = {'title' : title, 'path' : path, 'creationDate' : getTodaysSqlTimestamp()}
+    contentId = getIdOfDataInTable(myCursor, 'contents', dataDictToAdd)
+
     if contentId == -1:
-        insertContent(myCursor, title, path)
-        contentId = getContentId(myCursor, title, path)
+        insertDataIntoTable(myCursor, 'contents', dataDictToAdd)
+        contentId = getIdOfDataInTable(myCursor, 'contents', dataDictToAdd)
+        procedureProtocol['databaseTableStatuses']['contents'] = 'Successfully added entry: ' + str(dataDictToAdd)
     else:
         print("This content already exists! Consider editing it instead of adding it again. Aborting...")
-        mydbConnector.close()
-        return
+        procedureProtocol['databaseTableStatuses']['contents'] = 'Entry existed already: ' + str(dataDictToAdd)
     
     # Add information type and information if not already existing
     informationTypeIds = list()
     informationIds = list()
     if len(informationTypeList) != len(informationList):
         print("Error! informationList and informationTypeList must be of same length!")
-        return
+        procedureProtocol['databaseTableStatuses']['informationType'] = 'Error! informationList and informationTypeList must be of same length!'
+        procedureProtocol['databaseTableStatuses']['information'] = 'Error! informationList and informationTypeList must be of same length!'
+    else:
+        procedureProtocol['databaseTableStatuses']['informationType'] = dict()
+        procedureProtocol['databaseTableStatuses']['information'] = dict()
     for i in range(0, len(informationTypeList)):
-        informationTypeId = getInformationTypeId(myCursor, informationTypeList[i])
+        dataDictToAdd = {'type' : informationTypeList[i]}
+        informationTypeId = getIdOfDataInTable(myCursor, 'informationType', dataDictToAdd)
         if informationTypeId == -1:
-            insertInformationType(myCursor, informationTypeList[i])
-            informationTypeId = getInformationTypeId(myCursor, informationTypeList[i])
+            insertDataIntoTable(myCursor, 'informationType', dataDictToAdd)
+            informationTypeId = getIdOfDataInTable(myCursor, 'informationType', dataDictToAdd)
+            procedureProtocol['databaseTableStatuses']['informationType'][str(i)] = 'Successfully added entry: ' + str(dataDictToAdd)
+        else:
+            procedureProtocol['databaseTableStatuses']['informationType'][str(i)] = 'Entry existed already: ' + str(dataDictToAdd)
         informationTypeIds.append(informationTypeId)
-        informationId = getInformationId(myCursor, informationList[i])
+
+        dataDictToAdd = {'information' : informationList[i], 'informationTypeId' : informationTypeId}
+        informationId = getIdOfDataInTable(myCursor, 'information', dataDictToAdd)
         if informationId == -1:
-            insertInformation(myCursor, informationList[i], informationTypeId)
-            informationId = getInformationId(myCursor, informationList[i])
+            insertDataIntoTable(myCursor, 'information', dataDictToAdd)
+            informationId = getIdOfDataInTable(myCursor, 'information', dataDictToAdd)
+            procedureProtocol['databaseTableStatuses']['information'][str(i)] = 'Successfully added entry: ' + str(dataDictToAdd)
+        else:
+            procedureProtocol['databaseTableStatuses']['information'][str(i)] = 'Entry existed already: ' + str(dataDictToAdd)
         informationIds.append(informationId)
+
 
     # Add package and options combination if not already existing
     packageIds = list()
     packageOptionIds = list()
     if len(packageList) != len(packageOptionsList):
         print("Error! packageList and packageOptionsList must be of same length!")
-        return
+        procedureProtocol['databaseTableStatuses']['packageOptions'] = 'Error! packageList and packageOptionsList must be of same length!'
+        procedureProtocol['databaseTableStatuses']['packages'] = 'Error! packageList and packageOptionsList must be of same length!'
+    else:
+        procedureProtocol['databaseTableStatuses']['packageOptions'] = dict()
+        procedureProtocol['databaseTableStatuses']['packages'] = dict()
     for i in range(0, len(packageList)):
-        pass
-
-    #for package in packageList:
-    #    for packageOptions in packageOptionsList:
-    #        PkgOptId = getPackageAndOptionsId(myCursor, package, packageOption)
-    #        if PkgOptId == -1:
-    #            insertPackageAndOptions(myCursor, package, packageOption)
-    #            PkgOptId = getPackageAndOptionsId(myCursor, package, packageOption)
-
-    #
-    #fileTypeIds = list()
-    #fileType in fileTypes:
-    #    fileTypeId = getFileTypeId(myCursor, fileType)
-    #    pass
+        dataDictToAdd = {'package' : packageList[i]}
+        packageId = getIdOfDataInTable(myCursor, 'packages', dataDictToAdd)
+        if packageId == -1:
+            insertDataIntoTable(myCursor, 'packages', dataDictToAdd)
+            informationTypeId = getIdOfDataInTable(myCursor, 'packages', dataDictToAdd)
+            procedureProtocol['databaseTableStatuses']['packages'][str(i)] = 'Successfully added entry: ' + str(dataDictToAdd)
+        else:
+            procedureProtocol['databaseTableStatuses']['packages'][str(i)] = 'Entry existed already: ' + str(dataDictToAdd)
 
     # Add file paths if not already existing
     fileIds = list()

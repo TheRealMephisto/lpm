@@ -36,7 +36,6 @@ def addEntry():
         tmpPackageOptionsList = argUtil.stringToList(packageOptionsListRaw, ';')
         for packageOptionsRaw in tmpPackageOptionsList:
             packageOptionsList.append(argUtil.stringToList(packageOptionsRaw))
-        # ToDo: Convert the raw strings into lists
 
 
         dbUtil.addEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
