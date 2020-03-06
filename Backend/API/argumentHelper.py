@@ -6,7 +6,7 @@ def stringToList(inputString, separator=','):
     while (currentPosition < length):
         if inputString[currentPosition] == separator:
             returnList.append(inputString[substringStart:currentPosition])
-            substringStart = currentPosition
+            substringStart = currentPosition + 1
         currentPosition += 1
     if substringStart < length - 1:
         returnList.append(inputString[substringStart:currentPosition])
