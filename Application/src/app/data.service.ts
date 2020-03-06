@@ -18,7 +18,7 @@ export class DataService {
     let informationList: string = "AwesomeInfo1,AwesomeInfo2";
     let informationTypeList: string = "AwesomeInfoType1,AwesomeInfoType2";
     let packageList: string = "AwesomePackage1,AwesomePackage2";
-    let packageOptionsList: string = "AwesomeOpt1,AwesomeOpt2;AwesomeOpt3,AwesomeOpt4";
+    let packageOptionsList: string = "AwesomeOpt1,AwesomeOpt2,AwesomeOpt3;AwesomeOpt3,AwesomeOpt4";
 
     let params: HttpParams = new HttpParams()
                                 .set('title', title)

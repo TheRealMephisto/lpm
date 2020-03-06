@@ -30,7 +30,14 @@ def ensureExistenceOfTables (TablesToCreate, MyCursor, DatabaseName):
         else:
             print("Table " + key + " already exists! Skipped creation.")
 
-
+def insertDataIntoTable(myCursor, tableName, valueDict): # ToDo: put this in module to be referred from other pieces of code efficiently
+    command = "INSERT INTO `" + tableName + "`(`id` "
+    valueString = "NULL"
+    for key in valueDict:
+        command += ", `" + str(key) + "`"
+        valueString += ", '" + str(valueDict[key]) + "'"
+    command += ") VALUES (" + valueString + ");"
+    myCursor.execute(command)
 
 
 
@@ -65,12 +72,20 @@ if __name__ == "__main__":
         "contentRfiles" : "CREATE TABLE contentRfiles (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, fileId INT)",
         "contentRinformation" : "CREATE TABLE contentRinformation (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, informationId INT)",
         "contentRpackages" : "CREATE TABLE contentRpackages (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, packageId INT)",
-        #"fileTypes" : "CREATE TABLE fileTypes (id INT AUTO_INCREMENT PRIMARY KEY, type VARCHAR(255))",
         "packages" : "CREATE TABLE packages (id INT AUTO_INCREMENT PRIMARY KEY, package VARCHAR(255))",
         "packageRoptions": "CREATE TABLE packageRoptions (id INT AUTO_INCREMENT PRIMARY KEY, packageId INT, optionId INT)",
         "packageOptions": "CREATE TABLE packageOptions (id INT AUTO_INCREMENT PRIMARY KEY, option VARCHAR(255))",
-        "editHistory" : "CREATE TABLE editHistory (id INT AUTO_INCREMENT PRIMARY KEY, date DATE, userId INT)",
-        "users" : "CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255))"
+        "editHistory" : "CREATE TABLE editHistory (id INT AUTO_INCREMENT PRIMARY KEY, date DATE, userId INT, tableId INT, rowId INT, description VARCHAR(255))", # is this functionality really needed? Compare use with effort!
+        "users" : "CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255))",
+        "existingTables" : "CREATE TABLE existingTables (id INT AUTO_INCREMENT PRIMARY KEY, tableName VARCHAR(255))"
     }
 
     ensureExistenceOfTables(TablesToCreate, mycursor, DatabaseName)
+
+    for key in TablesToCreate:
+        insertDataIntoTable(mycursor, 'existingTables', {'tableName' : key})
+
+    insertDataIntoTable(mycursor, 'users', {'username' : 'devUser'})
+
+    mydb.commit()
+    mydb.close()
