@@ -107,7 +107,7 @@ def addEntry(title, path, username, filePathList, informationList, informationTy
         procedureProtocol['databaseTableStatuses']['informationType'][str(i)] = insertionOutput['protocolEntry']
         informationTypeIds.append(insertionOutput['entryId'])
 
-        dataDictToAdd = {'information' : informationList[i], 'informationTypeId' : informationTypeId}
+        dataDictToAdd = {'information' : informationList[i], 'informationTypeId' : insertionOutput['entryId']}
         insertionOutput = ensureEntryInTable(myCursor, 'information', dataDictToAdd)
         procedureProtocol['databaseTableStatuses']['information'][str(i)] = insertionOutput['protocolEntry']
         informationIds.append(insertionOutput['entryId'])
@@ -141,7 +141,7 @@ def addEntry(title, path, username, filePathList, informationList, informationTy
                 packageOptionIds[i].append(insertionOutput['entryId'])
 
                 # Add relation from package to package option
-                dataDictToAdd = {'packageId' : packageIds[i], 'optionId' : packageOptionId}
+                dataDictToAdd = {'packageId' : packageIds[i], 'optionId' : insertionOutput['entryId']}
                 insertionOutput = ensureEntryInTable(myCursor, 'packageRoptions', dataDictToAdd)
                 procedureProtocol['databaseTableStatuses']['packageRoptions'][str(i)][str(j)] = insertionOutput['protocolEntry']
 
@@ -195,5 +195,4 @@ def removeEntry(Id):
 
 
 if __name__ == "__main__":
-    addEntry("testtitle", "testpath", "testusername", ["testfilepath"], ["infotest"], ["infotesttype2"], ["testpkg2"], ["testopt2"])
-
+    pass
