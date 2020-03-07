@@ -1,5 +1,5 @@
 import mysql.connector
-import datetime
+from datetime import datetime, timezone, timedelta
 
 Host = "localhost"
 user = ""
@@ -7,19 +7,7 @@ password = ""
 database = "LPMdb"
 
 def getCurrentSqlTimestamp():
-    now = datetime.datetime.now()
-    sqlTimestamp = str(now.year) + "-"
-    sqlTimestamp += "0" if now.month < 10 else ""
-    sqlTimestamp += str(now.month) + "-"
-    sqlTimestamp += "0" if now.day < 10 else ""
-    sqlTimestamp += str(now.day) + " "
-    sqlTimestamp += "0" if now.hour < 10 else " " 
-    sqlTimestamp += str(now.hour) + ":"
-    sqlTimestamp += "0" if now.minute < 10 else ""
-    sqlTimestamp += str(now.minute) + ":"
-    sqlTimestamp += "0" if now.second < 10 else ""
-    sqlTimestamp += str(now.second)
-    return sqlTimestamp
+    return str(datetime.now(timezone(offset=timedelta(hours=(datetime.now().hour - datetime.now(timezone.utc).hour))).utc))
     
 
 def connectDB(Server = Host, Database = database, username = user, password = password):
