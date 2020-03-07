@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     # Create tables if not already existing
     TablesToCreate = {
-        "contents" : "CREATE TABLE contents (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), creationDate TIMESTAMP , path VARCHAR(255))",
+        "contents" : "CREATE TABLE contents (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), path VARCHAR(255))",
         "information" : "CREATE TABLE information (id INT AUTO_INCREMENT PRIMARY KEY, information TEXT, informationTypeId INT)",
         "informationType" : "CREATE TABLE informationType (id INT AUTO_INCREMENT PRIMARY KEY, type VARCHAR(255))",
         "files" : "CREATE TABLE files (id INT AUTO_INCREMENT PRIMARY KEY, path TEXT)",

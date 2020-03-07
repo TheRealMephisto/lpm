@@ -74,7 +74,7 @@ def addTexDocumentEntry(title, path, username, filePathList, informationList, in
     procedureProtocol['databaseTableStatuses'] = dict()
 
     # Add content
-    dataDictToAdd = {'title' : title, 'path' : path, 'creationDate' : getCurrentSqlTimestamp()}
+    dataDictToAdd = {'title' : title, 'path' : path}
     
     insertionOutput = ensureEntryInTable(myCursor, 'contents', dataDictToAdd)
     contentId = insertionOutput['entryId']
