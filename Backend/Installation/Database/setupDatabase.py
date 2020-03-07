@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     # Create tables if not already existing
     TablesToCreate = {
-        "contents" : "CREATE TABLE contents (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), creationDate DATE , path VARCHAR(255))",
+        "contents" : "CREATE TABLE contents (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), creationDate TIMESTAMP , path VARCHAR(255))",
         "information" : "CREATE TABLE information (id INT AUTO_INCREMENT PRIMARY KEY, information TEXT, informationTypeId INT)",
         "informationType" : "CREATE TABLE informationType (id INT AUTO_INCREMENT PRIMARY KEY, type VARCHAR(255))",
         "files" : "CREATE TABLE files (id INT AUTO_INCREMENT PRIMARY KEY, path TEXT)",
@@ -75,7 +75,7 @@ if __name__ == "__main__":
         "packages" : "CREATE TABLE packages (id INT AUTO_INCREMENT PRIMARY KEY, package VARCHAR(255))",
         "packageRoptions": "CREATE TABLE packageRoptions (id INT AUTO_INCREMENT PRIMARY KEY, packageId INT, optionId INT)",
         "packageOptions": "CREATE TABLE packageOptions (id INT AUTO_INCREMENT PRIMARY KEY, option VARCHAR(255))",
-        "editHistory" : "CREATE TABLE editHistory (id INT AUTO_INCREMENT PRIMARY KEY, date DATE, userId INT, tableId INT, rowId INT, description VARCHAR(255))", # is this functionality really needed? Compare use with effort!
+        "editHistory" : "CREATE TABLE editHistory (id INT AUTO_INCREMENT PRIMARY KEY, date TIMESTAMP, userId INT, tableId INT, rowId INT, description VARCHAR(255))", # is this functionality really needed? Compare use with effort!
         "users" : "CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255))",
         "existingTables" : "CREATE TABLE existingTables (id INT AUTO_INCREMENT PRIMARY KEY, tableName VARCHAR(255))"
     }

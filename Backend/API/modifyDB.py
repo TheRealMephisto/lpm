@@ -1,22 +1,25 @@
 import mysql.connector
-from datetime import date
+import datetime
 
 Host = "localhost"
 user = ""
 password = ""
 database = "LPMdb"
 
-def getTodaysSqlTimestamp():
+def getCurrentSqlTimestamp():
     today = date.today()
-    sqlTimestamp = str(today.year) + "-"
-    if today.month < 10:
-        sqlTimestamp += "0" + str(today.month) + "-"
-    else:
-        sqlTimestamp += str(today.month) + "-"
-    if today.day < 10:
-        sqlTimestamp += "0" + str(today.day)
-    else:
-        sqlTimestamp += str(today.day)
+    now = datetime.datetime.now()
+    sqlTimestamp = str(now.year) + "-"
+    sqlTimestamp += "0" if now.month < 10 else ""
+    sqlTimestamp += str(now.month) + "-"
+    sqlTimestamp += "0" if now.day < 10 else ""
+    sqlTimestamp += "str(now.day) "
+    sqlTimestamp += "0" if now.hour < 10 else " " 
+    sqlTimestamp += str(now.hour) + ":"
+    sqlTimestamp += "0" if now.minute < 10 else ""
+    sqlTimestamp += str(now.minute) + ":"
+    sqlTimestamp += "0" if now.second < 10 else ""
+    sqlTimestamp += str(now.second)
     return sqlTimestamp
     
 
@@ -85,7 +88,7 @@ def addTexDocumentEntry(title, path, username, filePathList, informationList, in
     procedureProtocol['databaseTableStatuses'] = dict()
 
     # Add content
-    dataDictToAdd = {'title' : title, 'path' : path, 'creationDate' : getTodaysSqlTimestamp()}
+    dataDictToAdd = {'title' : title, 'path' : path, 'creationDate' : getCurrentSqlTimestamp()}
     
     insertionOutput = ensureEntryInTable(myCursor, 'contents', dataDictToAdd)
     contentId = insertionOutput['entryId']
