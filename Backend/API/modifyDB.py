@@ -77,7 +77,7 @@ def ensureEntryInTable(myCursor, tableName, valueDict):
 
 
 
-def addEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList):
+def addTexDocumentEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList):
     mydbConnector = connectDB()
     myCursor = getCursor(mydbConnector)
     

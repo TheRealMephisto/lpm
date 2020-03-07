@@ -10,8 +10,8 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}}) # intermediate, adjust
 def index():
     return ("Hello World")
 
-@app.route("/api/addEntry", methods=['POST', 'GET'])
-def addEntry():
+@app.route("/api/addTexDocumentEntry", methods=['POST', 'GET'])
+def addTexDocumentEntry():
     entry = ""
     if request.method == 'POST':
         entry = request.form['entry']
@@ -38,7 +38,7 @@ def addEntry():
             packageOptionsList.append(argUtil.stringToList(packageOptionsRaw))
 
 
-        procedureProtocol = dbUtil.addEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
+        procedureProtocol = dbUtil.addTexDocumentEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
     return {'output': 'New Entry!', 'procedureProtocol': procedureProtocol}
 
 if __name__ == '__main__':

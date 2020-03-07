@@ -30,7 +30,7 @@ export class DataService {
                                 .set('packageList', packageList)
                                 .set('packageOptionsList', packageOptionsList);
     console.log("params: ", params);
-    let obs = this.http.get(this.url + '/addEntry', {
+    let obs = this.http.get(this.url + '/addTexDocumentEntry', {
       params: params
     });
     obs.subscribe(data => {
