@@ -7,13 +7,12 @@ password = ""
 database = "LPMdb"
 
 def getCurrentSqlTimestamp():
-    today = date.today()
     now = datetime.datetime.now()
     sqlTimestamp = str(now.year) + "-"
     sqlTimestamp += "0" if now.month < 10 else ""
     sqlTimestamp += str(now.month) + "-"
     sqlTimestamp += "0" if now.day < 10 else ""
-    sqlTimestamp += "str(now.day) "
+    sqlTimestamp += str(now.day) + " "
     sqlTimestamp += "0" if now.hour < 10 else " " 
     sqlTimestamp += str(now.hour) + ":"
     sqlTimestamp += "0" if now.minute < 10 else ""
