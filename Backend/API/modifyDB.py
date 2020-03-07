@@ -66,12 +66,15 @@ def ensureEntryInTable(myCursor, tableName, valueDict, userId='1'):
     return {'entryId' : getIdOfDataInTable(myCursor, tableName, valueDict), 'protocolEntry' : protocolEntry}
 
 '''
-    MySQL command for retrieval of a specific entry given its id in a given table
+    MySQL command for retrieval of a specific entry given a value of a specific column in a given table
 '''
-def getRowOfTable(myCursor, tableName, entryId):
-    command = "SELECT * from `" + tableName + "` WHERE `id` = " + str(entryId)
+def getRowsByValue(myCursor, tableName, key, value):
+    command = "SELECT * from `" + tableName + "` WHERE `" + key + "` = " + str(value)
     myCursor.execute(command)
-
+    results = myCursor.fetchall()
+    if len(results) > 0:
+        return results
+    return -1
 
 
 
@@ -196,26 +199,35 @@ def removeEntry(Id):
     index: number
 '''
 def getTexDocumentEntry(index):
-    title = "TestTitle"
-    path = "TestPath"
-    username = "TestUsername"
-    filePathList = ["fp1","fp2"]
+    mydbConnector = connectDB()
+    myCursor = getCursor(mydbConnector)
+
+    texDocumentEntry = dict()
+
+    row = getRowsByValue(myCursor, 'contents', 'id', index)[0]
+    texDocumentEntry['title'] = row[1]
+    texDocumentEntry['path'] = row[2]
+
+    # todo: get the user who created the content entry via editHistory table
+    texDocumentEntry['username'] = getRowsByValue(myCursor, 'users', 'id', 1)[0][1]
+
+    # to do:
+    # - get relations from content to filepaths
+    # - get filepaths and store them in the list
+    indices = list()
+    rows = getRowsByValue(myCursor, 'contentRfile', 'contentId', index)
+    for row in rows:
+        indices.append(row[2])
+    texDocumentEntry['filePaths'] = dict()
+    for i in range(0, len(indices)):
+        texDocumentEntry['filePaths'][str(i)] = getRowsByValue(myCursor, 'files', 'id', indices[i])[0][1]
+
+    # 
     informationList = ["info1","info2"]
     informationTypeList = ["infoType1","infoType2"]
     packageList = ["package1","package2"]
     packageOptionsList = [["opt1","opt2","opt3"], ["opt3","opt4"]]
 
-    texDocumentEntry = dict()
-    # title
-    texDocumentEntry['title'] = title
-    # path
-    texDocumentEntry['path'] = path
-    # username
-    texDocumentEntry['username'] = username
-    # filePathList
-    texDocumentEntry['filePaths'] = dict()
-    for i in range(0, len(filePathList)):
-        texDocumentEntry['filePaths'][str(i)] = filePathList[i]
     # informationList
     texDocumentEntry['information'] = dict()
     for i in range(0, len(informationList)):
@@ -231,6 +243,9 @@ def getTexDocumentEntry(index):
         for j in range(0, len(packageOptionsList[i])):
             texDocumentEntry['packages'][str(i)]['options'][str(j)] = packageOptionsList[i][j]
 
+    mydbConnector.commit()
+    mydbConnector.close()
+
     return texDocumentEntry
 
 '''
@@ -242,9 +257,9 @@ def getTexDocumentEntry(index):
     maxResults: number
 '''
 def getTexDocumentEntries(startAt, maxResults):
-    for i in range(startAt, startAt + maxResults):
-        getTexDocumentEntry(i)
-    return getTexDocumentEntry(0)
+    # for i in range(startAt, startAt + maxResults):
+    #     getTexDocumentEntry(i)
+    return getTexDocumentEntry(2)
 
 if __name__ == "__main__":
     pass
