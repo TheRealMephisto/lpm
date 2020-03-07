@@ -103,7 +103,6 @@ def addTexDocumentEntry(title, path, username, filePathList, informationList, in
         procedureProtocol['databaseTableStatuses']['information'][str(i)] = insertionOutput['protocolEntry']
         informationIds.append(insertionOutput['entryId'])
 
-
     # Add package and options combination if not already existing
     packageIds = list()
     packageOptionIds = list()
@@ -114,9 +113,9 @@ def addTexDocumentEntry(title, path, username, filePathList, informationList, in
     else:
         procedureProtocol['databaseTableStatuses']['packageOptions'] = dict()
         procedureProtocol['databaseTableStatuses']['packages'] = dict()
-        procedureProtocol['databaseTableStatuses']['packageRoptions'] = dict()
+        procedureProtocol['databaseTableStatuses']['packageRoption'] = dict()
         for i in range(0, len(packageList)):
-            procedureProtocol['databaseTableStatuses']['packageRoptions'][str(i)] = dict()
+            procedureProtocol['databaseTableStatuses']['packageRoption'][str(i)] = dict()
             dataDictToAdd = {'package' : packageList[i]}
             insertionOutput = ensureEntryInTable(myCursor, 'packages', dataDictToAdd)
             procedureProtocol['databaseTableStatuses']['packages'][str(i)] = insertionOutput['protocolEntry']
@@ -133,8 +132,8 @@ def addTexDocumentEntry(title, path, username, filePathList, informationList, in
 
                 # Add relation from package to package option
                 dataDictToAdd = {'packageId' : packageIds[i], 'optionId' : insertionOutput['entryId']}
-                insertionOutput = ensureEntryInTable(myCursor, 'packageRoptions', dataDictToAdd)
-                procedureProtocol['databaseTableStatuses']['packageRoptions'][str(i)][str(j)] = insertionOutput['protocolEntry']
+                insertionOutput = ensureEntryInTable(myCursor, 'packageRoption', dataDictToAdd)
+                procedureProtocol['databaseTableStatuses']['packageRoption'][str(i)][str(j)] = insertionOutput['protocolEntry']
 
     # Add file paths if not already existing
     fileIds = list()
@@ -146,14 +145,14 @@ def addTexDocumentEntry(title, path, username, filePathList, informationList, in
         fileIds.append(insertionOutput['entryId'])
 
     # Add contentRfiles, contentRinformation and contentRpackages entry
-    procedureProtocol['databaseTableStatuses']['contentRfiles'] = dict()
+    procedureProtocol['databaseTableStatuses']['contentRfile'] = dict()
     for i in range(0, len(fileIds)):
         dataDictToAdd = {'contentId' : contentId, 'fileId' : fileIds[i]}
-        if getIdOfDataInTable(myCursor, 'contentRfiles', dataDictToAdd)== -1:
-            ensureEntryInTable(myCursor, 'contentRfiles', dataDictToAdd)
-            procedureProtocol['databaseTableStatuses']['contentRfiles'][str(i)] = 'Successfully added entry: ' + str(dataDictToAdd)
+        if getIdOfDataInTable(myCursor, 'contentRfile', dataDictToAdd)== -1:
+            ensureEntryInTable(myCursor, 'contentRfile', dataDictToAdd)
+            procedureProtocol['databaseTableStatuses']['contentRfile'][str(i)] = 'Successfully added entry: ' + str(dataDictToAdd)
         else:
-            procedureProtocol['databaseTableStatuses']['contentRfiles'][str(i)] = 'Entry existed already: ' + str(dataDictToAdd)
+            procedureProtocol['databaseTableStatuses']['contentRfile'][str(i)] = 'Entry existed already: ' + str(dataDictToAdd)
     
     procedureProtocol['databaseTableStatuses']['contentRinformation'] = dict()
     for i in range(0, len(informationIds)):
@@ -164,14 +163,14 @@ def addTexDocumentEntry(title, path, username, filePathList, informationList, in
         else:
             procedureProtocol['databaseTableStatuses']['contentRinformation'][str(i)] = 'Entry existed already: ' + str(dataDictToAdd)
 
-    procedureProtocol['databaseTableStatuses']['contentRpackages'] = dict()
+    procedureProtocol['databaseTableStatuses']['contentRpackage'] = dict()
     for i in range(0, len(packageIds)):
         dataDictToAdd = {'contentId' : contentId, 'packageId' : packageIds[i]}
-        if getIdOfDataInTable(myCursor, 'contentRpackages', dataDictToAdd) == -1:
-            ensureEntryInTable(myCursor, 'contentRpackages', dataDictToAdd)
-            procedureProtocol['databaseTableStatuses']['contentRpackages'][str(i)] = 'Successfully added entry: ' + str(dataDictToAdd)
+        if getIdOfDataInTable(myCursor, 'contentRpackage', dataDictToAdd) == -1:
+            ensureEntryInTable(myCursor, 'contentRpackage', dataDictToAdd)
+            procedureProtocol['databaseTableStatuses']['contentRpackage'][str(i)] = 'Successfully added entry: ' + str(dataDictToAdd)
         else:
-            procedureProtocol['databaseTableStatuses']['contentRpackages'][str(i)] = 'Entry existed already: ' + str(dataDictToAdd)
+            procedureProtocol['databaseTableStatuses']['contentRpackage'][str(i)] = 'Entry existed already: ' + str(dataDictToAdd)
 
     mydbConnector.commit()
     mydbConnector.close()
