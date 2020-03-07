@@ -52,13 +52,15 @@ def insertDataIntoTable(myCursor, tableName, valueDict): # ToDo: put this in mod
     
     Check if the entry to be added already exists.
     If yes, simply return its id.
-    If not, add it and return its id.
+    If not, add it and a timestamp in editHistory and return its id.
 '''
-def ensureEntryInTable(myCursor, tableName, valueDict):
+def ensureEntryInTable(myCursor, tableName, valueDict, userId='1'):
+    tableId = getIdOfDataInTable(myCursor, 'existingTables', {'tableName': tableName})
     entryId = getIdOfDataInTable(myCursor, tableName, valueDict)
     if entryId == -1:
         insertDataIntoTable(myCursor, tableName, valueDict)
         entryId = getIdOfDataInTable(myCursor, tableName, valueDict)
+        insertDataIntoTable(myCursor, 'editHistory', {'date': getCurrentSqlTimestamp(), 'userId': 1, 'tableId': tableId, 'rowId': entryId, 'description': 'Added'})
         protocolEntry = 'Successfully added entry: ' + str(valueDict)
     else:
         protocolEntry = 'Entry existed already: ' + str(valueDict)
