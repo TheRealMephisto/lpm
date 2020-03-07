@@ -12,5 +12,11 @@ def stringToList(inputString, separator=','):
         returnList.append(inputString[substringStart:currentPosition])
     return returnList
 
+def listToString(inputList, separator=','):
+    concatenatedString = ""
+    for element in inputList:
+        concatenatedString += str(element) + separator
+    return concatenatedString[:-len(separator)]
+
 if __name__ == "__main__":
     pass

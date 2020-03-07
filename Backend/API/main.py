@@ -10,6 +10,16 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}}) # intermediate, adjust
 def index():
     return ("Hello World")
 
+@app.route("/api/getTexDocumentEntries", methods=['POST', 'GET'])
+def getTexDocumentEntries():
+    if request.method == 'POST':
+        pass
+    else:
+        startAt = int(request.args.get('startAt'))
+        maxResults = int(request.args.get('maxResults'))
+
+        return {'sumOfArguments' : startAt + maxResults, 'entries' : dbUtil.getTexDocumentEntries(startAt, maxResults)}
+
 @app.route("/api/addTexDocumentEntry", methods=['POST', 'GET'])
 def addTexDocumentEntry():
     entry = ""
@@ -19,14 +29,14 @@ def addTexDocumentEntry():
     else:
         entry = request.args.get('entry')
 
-        title = request.args.get('title')
-        path = request.args.get('path')
-        username = request.args.get('username')
-        filePathListRaw = request.args.get('filePathList') # Lists will be strings with , as separator
-        informationListRaw = request.args.get('informationList')
-        informationTypeListRaw = request.args.get('informationTypeList')
-        packageListRaw = request.args.get('packageList')
-        packageOptionsListRaw = request.args.get('packageOptionsList')
+        title = str(request.args.get('title'))
+        path = str(request.args.get('path'))
+        username = str(request.args.get('username'))
+        filePathListRaw = str(request.args.get('filePathList')) # Lists will be strings with , as separator
+        informationListRaw = str(request.args.get('informationList'))
+        informationTypeListRaw = str(request.args.get('informationTypeList'))
+        packageListRaw = str(request.args.get('packageList'))
+        packageOptionsListRaw = str(request.args.get('packageOptionsList'))
         
         filePathList = argUtil.stringToList(filePathListRaw)
         informationList = argUtil.stringToList(informationListRaw)

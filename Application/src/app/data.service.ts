@@ -10,7 +10,20 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
-  public addNewContent(){
+  public getTexDocumentEntries(startAt: number, maxResults: number) {
+    let params: HttpParams = new HttpParams()
+                                .set('startAt', startAt.toString())
+                                .set('maxResults', maxResults.toString());
+    console.log("params: ", params);
+    let request = this.http.get(this.url + '/getTexDocumentEntries', {
+      params: params
+    });
+    request.subscribe(data => {
+      console.log(data);
+    });
+  }
+
+  public addNewContent(): void {
     let title: string = "AwesomeTitle";
     let path: string = "AwesomePath";
     let username: string = "AwesomeName";
@@ -36,6 +49,5 @@ export class DataService {
     obs.subscribe(data => {
       console.log(data);
     });
-    
   }
 }

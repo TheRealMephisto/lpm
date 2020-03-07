@@ -65,6 +65,15 @@ def ensureEntryInTable(myCursor, tableName, valueDict, userId='1'):
         protocolEntry = 'Entry existed already: ' + str(valueDict)
     return {'entryId' : getIdOfDataInTable(myCursor, tableName, valueDict), 'protocolEntry' : protocolEntry}
 
+'''
+    MySQL command for retrieval of a specific entry given its id in a given table
+'''
+def getRowOfTable(myCursor, tableName, entryId):
+    command = "SELECT * from `" + tableName + "` WHERE `id` = " + str(entryId)
+    myCursor.execute(command)
+
+
+
 
 
 def addTexDocumentEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList):
@@ -182,6 +191,60 @@ def removeEntry(Id):
     pass
 
 
+
+'''
+    index: number
+'''
+def getTexDocumentEntry(index):
+    title = "TestTitle"
+    path = "TestPath"
+    username = "TestUsername"
+    filePathList = ["fp1","fp2"]
+    informationList = ["info1","info2"]
+    informationTypeList = ["infoType1","infoType2"]
+    packageList = ["package1","package2"]
+    packageOptionsList = [["opt1","opt2","opt3"], ["opt3","opt4"]]
+
+    texDocumentEntry = dict()
+    # title
+    texDocumentEntry['title'] = title
+    # path
+    texDocumentEntry['path'] = path
+    # username
+    texDocumentEntry['username'] = username
+    # filePathList
+    texDocumentEntry['filePaths'] = dict()
+    for i in range(0, len(filePathList)):
+        texDocumentEntry['filePaths'][str(i)] = filePathList[i]
+    # informationList
+    texDocumentEntry['information'] = dict()
+    for i in range(0, len(informationList)):
+        texDocumentEntry['information'][str(i)] = dict()
+        texDocumentEntry['information'][str(i)]['information'] = informationList[i]
+        texDocumentEntry['information'][str(i)]['type'] = informationTypeList[i]
+    # packageList
+    texDocumentEntry['packages'] = dict()
+    for i in range(0, len(packageList)):
+        texDocumentEntry['packages'][str(i)] = dict()
+        texDocumentEntry['packages'][str(i)]['package'] = packageList[i]
+        texDocumentEntry['packages'][str(i)]['options'] = dict()
+        for j in range(0, len(packageOptionsList[i])):
+            texDocumentEntry['packages'][str(i)]['options'][str(j)] = packageOptionsList[i][j]
+
+    return texDocumentEntry
+
+'''
+    Return JSON-object containing the information of a TexDocument.
+    Indicator is the contents table,
+    extract the rows (and the corresponding data of the other tables)
+    beginning from index startAt up to maxResults.
+    startAt: number
+    maxResults: number
+'''
+def getTexDocumentEntries(startAt, maxResults):
+    for i in range(startAt, startAt + maxResults):
+        getTexDocumentEntry(i)
+    return getTexDocumentEntry(0)
 
 if __name__ == "__main__":
     pass

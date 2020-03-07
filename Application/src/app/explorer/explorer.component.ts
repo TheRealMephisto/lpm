@@ -85,4 +85,8 @@ export class ExplorerComponent implements OnInit {
     this.dataService.addNewContent();
   }
 
+  public getEntriesTest() {
+    this.dataService.getTexDocumentEntries(3, 5);
+  }
+
 }
