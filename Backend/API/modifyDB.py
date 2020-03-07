@@ -7,8 +7,7 @@ password = ""
 database = "LPMdb"
 
 def getCurrentSqlTimestamp():
-    return str(datetime.now(timezone(offset=timedelta(hours=(datetime.now().hour - datetime.now(timezone.utc).hour))).utc))
-    
+    return str(datetime.utcnow())
 
 def connectDB(Server = Host, Database = database, username = user, password = password):
     return mysql.connector.connect (
