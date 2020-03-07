@@ -59,12 +59,11 @@ def ensureEntryInTable(myCursor, tableName, valueDict, userId='1'):
     entryId = getIdOfDataInTable(myCursor, tableName, valueDict)
     if entryId == -1:
         insertDataIntoTable(myCursor, tableName, valueDict)
-        entryId = getIdOfDataInTable(myCursor, tableName, valueDict)
         insertDataIntoTable(myCursor, 'editHistory', {'date': getCurrentSqlTimestamp(), 'userId': 1, 'tableId': tableId, 'rowId': entryId, 'description': 'Added'})
         protocolEntry = 'Successfully added entry: ' + str(valueDict)
     else:
         protocolEntry = 'Entry existed already: ' + str(valueDict)
-    return {'entryId' : entryId, 'protocolEntry' : protocolEntry}
+    return {'entryId' : getIdOfDataInTable(myCursor, tableName, valueDict), 'protocolEntry' : protocolEntry}
 
 
 
