@@ -232,7 +232,7 @@ def getTexDocumentEntry(index):
     for i in range(0, len(rows)):
         texDocumentEntry['information'][str(i)] = dict()
         texDocumentEntry['information'][str(i)]['information'] = row[1]
-        texDocumentEntry['information'][str(i)]['type'] = getRowsByValue(myCursor, 'informationType', 'id', row[2])
+        texDocumentEntry['information'][str(i)]['type'] = getRowsByValue(myCursor, 'informationType', 'id', row[2])[0][1]
     
 
     texDocumentEntry['packages'] = dict()
