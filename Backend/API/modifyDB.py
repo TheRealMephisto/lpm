@@ -263,9 +263,14 @@ def getTexDocumentEntry(index):
     maxResults: number
 '''
 def getTexDocumentEntries(startAt, maxResults):
-    # for i in range(startAt, startAt + maxResults):
-    #     getTexDocumentEntry(i)
-    return getTexDocumentEntry(2)
+    texDocumentEntries = dict()
+    for i in range(startAt, startAt + maxResults):
+        candidate = getTexDocumentEntry(i)
+        if candidate != -1:
+            texDocumentEntries[str(i)] = candidate
+        else:
+            break
+    return texDocumentEntries
 
 if __name__ == "__main__":
     pass
