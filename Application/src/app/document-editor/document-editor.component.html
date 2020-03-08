@@ -1,1 +1,24 @@
-<p>document-editor works!</p>
+<div>
+    <h2>Document Editor</h2>
+    <div>
+        <mat-form-field appearance="fill">
+            <mat-label>Title</mat-label>
+            <input matInput placeholder="Document title" [formControl]="title" required>
+            <mat-error *ngIf="title.invalid">{{getErrorMessage('title')}}</mat-error>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field appearance="fill">
+            <mat-label>Path</mat-label>
+            <input matInput placeholder="Document path" [formControl]="path" required>
+            <mat-error *ngIf="path.invalid">{{getErrorMessage('path')}}</mat-error>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field appearance="fill">
+            <mat-label>Author</mat-label>
+            <input matInput [formControl]="author" required>
+            <mat-error *ngIf="path.invalid">{{getErrorMessage('author')}}</mat-error>
+        </mat-form-field>
+    </div>
+</div>
