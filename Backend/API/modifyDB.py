@@ -76,6 +76,10 @@ def getRowsByValue(myCursor, tableName, key, value):
         return results
     return -1
 
+def getFirstRowByValue(myCursor, tableName, key, value):
+    rows = getRowsByValue(myCursor, tableName, key, value)
+    return rows[0] if rows != -1 else -1
+
 def getRowsByValues(myCursor, tableName, key, valueList):
     rows = list()
     for value in valueList:
@@ -222,7 +226,7 @@ def getTexDocumentEntry(contentId):
 
     # todo: get the user who created the content entry via editHistory table
     index = getRowsByValue(myCursor, 'contentRuser', 'contentId', contentId)
-    texDocumentEntry['username'] = getRowsByValue(myCursor, 'users', 'id', index[0][2])[0][1]
+    texDocumentEntry['username'] = getFirstRowByValue(myCursor, 'users', 'id', index[0][2])[1]
 
     indices = list()
     rows = getRowsByValue(myCursor, 'contentRfile', 'contentId', contentId)
@@ -230,7 +234,7 @@ def getTexDocumentEntry(contentId):
         indices.append(row[2])
     texDocumentEntry['filePaths'] = dict()
     for i in range(0, len(indices)):
-        texDocumentEntry['filePaths'][str(i)] = getRowsByValue(myCursor, 'files', 'id', indices[i])[0][1]
+        texDocumentEntry['filePaths'][str(i)] = getFirstRowByValue(myCursor, 'files', 'id', indices[i])[1]
 
     texDocumentEntry['information'] = dict()
     indices = list()
@@ -241,7 +245,7 @@ def getTexDocumentEntry(contentId):
     for i in range(0, len(rows)):
         texDocumentEntry['information'][str(i)] = dict()
         texDocumentEntry['information'][str(i)]['information'] = row[1]
-        texDocumentEntry['information'][str(i)]['type'] = getRowsByValue(myCursor, 'informationType', 'id', row[2])[0][1]
+        texDocumentEntry['information'][str(i)]['type'] = getFirstRowByValue(myCursor, 'informationType', 'id', row[2])[1]
     
 
     texDocumentEntry['packages'] = dict()
@@ -256,7 +260,7 @@ def getTexDocumentEntry(contentId):
         relationRows = getRowsByValue(myCursor, 'packageRoption', 'packageId', rows[i][0])
         texDocumentEntry['packages'][str(i)]['options'] = dict()
         for j in range(0, len(relationRows)):
-            texDocumentEntry['packages'][str(i)]['options'][str(j)] = getRowsByValue(myCursor, 'packageOptions', 'id', relationRows[j][2])[0][1]
+            texDocumentEntry['packages'][str(i)]['options'][str(j)] = getFirstRowByValue(myCursor, 'packageOptions', 'id', relationRows[j][2])[1]
             
     mydbConnector.commit()
     mydbConnector.close()
