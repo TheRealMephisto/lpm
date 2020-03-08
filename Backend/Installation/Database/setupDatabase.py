@@ -72,6 +72,7 @@ if __name__ == "__main__":
         "contentRfile" : "CREATE TABLE contentRfile (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, fileId INT)",
         "contentRinformation" : "CREATE TABLE contentRinformation (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, informationId INT)",
         "contentRpackage" : "CREATE TABLE contentRpackage (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, packageId INT)",
+        "contentRuser" : "CREATE TABLE contentRuser (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, userId INT)",
         "packages" : "CREATE TABLE packages (id INT AUTO_INCREMENT PRIMARY KEY, package VARCHAR(255))",
         "packageRoption": "CREATE TABLE packageRoption (id INT AUTO_INCREMENT PRIMARY KEY, packageId INT, optionId INT)",
         "packageOptions": "CREATE TABLE packageOptions (id INT AUTO_INCREMENT PRIMARY KEY, option VARCHAR(255))",
@@ -84,8 +85,6 @@ if __name__ == "__main__":
 
     for key in TablesToCreate:
         insertDataIntoTable(mycursor, 'existingTables', {'tableName' : key})
-
-    insertDataIntoTable(mycursor, 'users', {'username' : 'devUser'})
 
     mydb.commit()
     mydb.close()

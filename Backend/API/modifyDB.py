@@ -92,10 +92,15 @@ def addTexDocumentEntry(title, path, username, filePathList, informationList, in
 
     # Add content
     dataDictToAdd = {'title' : title, 'path' : path}
-    
     insertionOutput = ensureEntryInTable(myCursor, 'contents', dataDictToAdd)
     contentId = insertionOutput['entryId']
     procedureProtocol['databaseTableStatuses']['contents'] = insertionOutput['protocolEntry']
+
+    # Add user
+    dataDictToAdd = {'username': username}
+    insertionOutput = ensureEntryInTable(myCursor, 'users', dataDictToAdd)
+    userId = insertionOutput['entryId']
+    procedureProtocol['databaseTableStatuses']['users'] = insertionOutput['protocolEntry']
     
     # Add information type and information if not already existing
     informationTypeIds = list()
@@ -159,24 +164,23 @@ def addTexDocumentEntry(title, path, username, filePathList, informationList, in
         procedureProtocol['databaseTableStatuses']['files'][str(i)] = insertionOutput['protocolEntry']
         fileIds.append(insertionOutput['entryId'])
 
-    # Add contentRfiles, contentRinformation and contentRpackages entry
+    # Add contentRuser, contentRfile, contentRinformation and contentRpackages entry
+    procedureProtocol['databaseTableStatuses']['contentRuser'] = dict()
+    dataDictToAdd = {'contentId' : contentId, 'userId' : userId}
+    insertionOutput = ensureEntryInTable(myCursor, 'contentRuser', dataDictToAdd)
+    procedureProtocol['databaseTableStatuses']['contentRuser']['protocolEntry'] = insertionOutput['protocolEntry']
+
     procedureProtocol['databaseTableStatuses']['contentRfile'] = dict()
     for i in range(0, len(fileIds)):
         dataDictToAdd = {'contentId' : contentId, 'fileId' : fileIds[i]}
-        if getIdOfDataInTable(myCursor, 'contentRfile', dataDictToAdd)== -1:
-            ensureEntryInTable(myCursor, 'contentRfile', dataDictToAdd)
-            procedureProtocol['databaseTableStatuses']['contentRfile'][str(i)] = 'Successfully added entry: ' + str(dataDictToAdd)
-        else:
-            procedureProtocol['databaseTableStatuses']['contentRfile'][str(i)] = 'Entry existed already: ' + str(dataDictToAdd)
+        insertionOutput = ensureEntryInTable(myCursor, 'contentRfile', dataDictToAdd)
+        procedureProtocol['databaseTableStatuses']['contentRfile'][str(i)] = insertionOutput['protocolEntry']
     
     procedureProtocol['databaseTableStatuses']['contentRinformation'] = dict()
     for i in range(0, len(informationIds)):
         dataDictToAdd = {'contentId' : contentId, 'informationId' : informationIds[i]}
-        if getIdOfDataInTable(myCursor, 'contentRinformation', dataDictToAdd) == -1:
-            ensureEntryInTable(myCursor, 'contentRinformation', dataDictToAdd)
-            procedureProtocol['databaseTableStatuses']['contentRinformation'][str(i)] = 'Successfully added entry: ' + str(dataDictToAdd)
-        else:
-            procedureProtocol['databaseTableStatuses']['contentRinformation'][str(i)] = 'Entry existed already: ' + str(dataDictToAdd)
+        insertionOutput = ensureEntryInTable(myCursor, 'contentRinformation', dataDictToAdd)
+        procedureProtocol['databaseTableStatuses']['contentRinformation'][str(i)] = insertionOutput['protocolEntry']
 
     procedureProtocol['databaseTableStatuses']['contentRpackage'] = dict()
     for i in range(0, len(packageIds)):
@@ -201,15 +205,15 @@ def removeEntry(Id):
 
 '''
     Return an entry if existing, -1 else.
-    index: number
+    contentId: number
 '''
-def getTexDocumentEntry(index):
+def getTexDocumentEntry(contentId):
     mydbConnector = connectDB()
     myCursor = getCursor(mydbConnector)
 
     texDocumentEntry = dict()
 
-    rows = getRowsByValue(myCursor, 'contents', 'id', index)
+    rows = getRowsByValue(myCursor, 'contents', 'id', contentId)
     if rows == -1:
         return -1
     row = rows[0]
@@ -217,10 +221,11 @@ def getTexDocumentEntry(index):
     texDocumentEntry['path'] = row[2]
 
     # todo: get the user who created the content entry via editHistory table
-    texDocumentEntry['username'] = getRowsByValue(myCursor, 'users', 'id', 1)[0][1]
+    index = getRowsByValue(myCursor, 'contentRuser', 'contentId', contentId)
+    texDocumentEntry['username'] = getRowsByValue(myCursor, 'users', 'id', index[0][2])[0][1]
 
     indices = list()
-    rows = getRowsByValue(myCursor, 'contentRfile', 'contentId', index)
+    rows = getRowsByValue(myCursor, 'contentRfile', 'contentId', contentId)
     for row in rows:
         indices.append(row[2])
     texDocumentEntry['filePaths'] = dict()
@@ -229,7 +234,7 @@ def getTexDocumentEntry(index):
 
     texDocumentEntry['information'] = dict()
     indices = list()
-    rows = getRowsByValue(myCursor, 'contentRinformation', 'contentId', index)
+    rows = getRowsByValue(myCursor, 'contentRinformation', 'contentId', contentId)
     for row in rows:
         indices.append(row[2])
     rows = getRowsByValues(myCursor, 'information', 'id', indices)
@@ -241,7 +246,7 @@ def getTexDocumentEntry(index):
 
     texDocumentEntry['packages'] = dict()
     indices = list() # indices will hold the indices of packages belonging to the content
-    rows = getRowsByValue(myCursor, 'contentRpackage', 'contentId', index)
+    rows = getRowsByValue(myCursor, 'contentRpackage', 'contentId', contentId)
     for row in rows:
         indices.append(row[2])
     rows = getRowsByValues(myCursor, 'packages', 'id', indices)
