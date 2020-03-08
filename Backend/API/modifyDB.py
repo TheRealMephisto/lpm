@@ -76,7 +76,11 @@ def getRowsByValue(myCursor, tableName, key, value):
         return results
     return -1
 
-
+def getRowsByValues(myCursor, tableName, key, valueList):
+    rows = list()
+    for value in valueList:
+        rows.extend(getRowsByValue(myCursor, tableName, key, value))
+    return rows
 
 
 def addTexDocumentEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList):
@@ -211,9 +215,6 @@ def getTexDocumentEntry(index):
     # todo: get the user who created the content entry via editHistory table
     texDocumentEntry['username'] = getRowsByValue(myCursor, 'users', 'id', 1)[0][1]
 
-    # to do:
-    # - get relations from content to filepaths
-    # - get filepaths and store them in the list
     indices = list()
     rows = getRowsByValue(myCursor, 'contentRfile', 'contentId', index)
     for row in rows:
@@ -222,27 +223,32 @@ def getTexDocumentEntry(index):
     for i in range(0, len(indices)):
         texDocumentEntry['filePaths'][str(i)] = getRowsByValue(myCursor, 'files', 'id', indices[i])[0][1]
 
-    # 
-    informationList = ["info1","info2"]
-    informationTypeList = ["infoType1","infoType2"]
-    packageList = ["package1","package2"]
-    packageOptionsList = [["opt1","opt2","opt3"], ["opt3","opt4"]]
-
-    # informationList
     texDocumentEntry['information'] = dict()
-    for i in range(0, len(informationList)):
+    indices = list()
+    rows = getRowsByValue(myCursor, 'contentRinformation', 'contentId', index)
+    for row in rows:
+        indices.append(row[2])
+    rows = getRowsByValues(myCursor, 'information', 'id', indices)
+    for i in range(0, len(rows)):
         texDocumentEntry['information'][str(i)] = dict()
-        texDocumentEntry['information'][str(i)]['information'] = informationList[i]
-        texDocumentEntry['information'][str(i)]['type'] = informationTypeList[i]
-    # packageList
-    texDocumentEntry['packages'] = dict()
-    for i in range(0, len(packageList)):
-        texDocumentEntry['packages'][str(i)] = dict()
-        texDocumentEntry['packages'][str(i)]['package'] = packageList[i]
-        texDocumentEntry['packages'][str(i)]['options'] = dict()
-        for j in range(0, len(packageOptionsList[i])):
-            texDocumentEntry['packages'][str(i)]['options'][str(j)] = packageOptionsList[i][j]
+        texDocumentEntry['information'][str(i)]['information'] = row[1]
+        texDocumentEntry['information'][str(i)]['type'] = getRowsByValue(myCursor, 'informationType', 'id', row[2])
+    
 
+    texDocumentEntry['packages'] = dict()
+    indices = list() # indices will hold the indices of packages belonging to the content
+    rows = getRowsByValue(myCursor, 'contentRpackage', 'contentId', index)
+    for row in rows:
+        indices.append(row[2])
+    rows = getRowsByValues(myCursor, 'packages', 'id', indices)
+    for i in range(0, len(rows)):
+        texDocumentEntry['packages'][str(i)] = dict()
+        texDocumentEntry['packages'][str(i)]['package'] = rows[i][1]
+        relationRows = getRowsByValue(myCursor, 'packageRoption', 'packageId', rows[i][0])
+        texDocumentEntry['packages'][str(i)]['options'] = dict()
+        for j in range(0, len(relationRows)):
+            texDocumentEntry['packages'][str(i)]['options'][str(j)] = getRowsByValue(myCursor, 'packageOptions', 'id', relationRows[j][2])[0][1]
+            
     mydbConnector.commit()
     mydbConnector.close()
 
