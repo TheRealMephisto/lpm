@@ -200,6 +200,7 @@ def removeEntry(Id):
 
 
 '''
+    Return an entry if existing, -1 else.
     index: number
 '''
 def getTexDocumentEntry(index):
@@ -208,7 +209,10 @@ def getTexDocumentEntry(index):
 
     texDocumentEntry = dict()
 
-    row = getRowsByValue(myCursor, 'contents', 'id', index)[0]
+    rows = getRowsByValue(myCursor, 'contents', 'id', index)
+    if rows == -1:
+        return -1
+    row = rows[0]
     texDocumentEntry['title'] = row[1]
     texDocumentEntry['path'] = row[2]
 
