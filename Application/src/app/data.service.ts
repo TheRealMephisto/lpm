@@ -26,7 +26,7 @@ export class DataService {
   public addNewContent(): void {
     let title: string = "AwesomeTitle";
     let path: string = "AwesomePath";
-    let username: string = "AwesomeName";
+    let username: string = "devUser";
     let filePathList: string = "AwesomeFilePath1,AwesomeFilePath2";
     let informationList: string = "AwesomeInfo1,AwesomeInfo2";
     let informationTypeList: string = "AwesomeInfoType1,AwesomeInfoType2";
