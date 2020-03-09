@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 
 /**
  * Provide a form enabling the user to edit database entries, i.e. of TeX-Documents.
@@ -13,27 +13,35 @@ export class DocumentEditorComponent implements OnInit {
 
   fileEnding: string = 'tex'
 
-  constructor() { }
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.author.setValue('devUser')
+    this.texdocumentForm.get('author').setValue('devUser');
   }
 
-  title = new FormControl('', [Validators.required]);
-  path = new FormControl('', [Validators.required, Validators.pattern('.*\.'.concat(this.fileEnding))]);
-  author = new FormControl('', [Validators.required]);
+  public texdocumentForm = new FormGroup({
+    title: new FormControl('', [Validators.required]),
+    path: new FormControl('', [Validators.required, Validators.pattern('.*\.'.concat(this.fileEnding))]),
+    author: new FormControl('', [Validators.required]),
+    packages: this.fb.array([
+      this.fb.group({
+        package: new FormControl(''),
+        options: this.fb.array([])
+      })
+    ])
+  });
 
   getErrorMessage(target: string): string {
-    let targetForm: FormControl;
+    let targetForm;
     switch(target) {
       case 'title':
-        targetForm = this.title;
+        targetForm = this.texdocumentForm.get('author');
         break;
       case 'path':
-        targetForm = this.path;
+        targetForm = this.texdocumentForm.get('author');
         break;
       case 'author':
-        targetForm = this.author;
+        targetForm = this.texdocumentForm.get('author');
         break;
       default:
         return;
@@ -44,6 +52,10 @@ export class DocumentEditorComponent implements OnInit {
     if (targetForm.hasError('pattern')) {
       return 'Must be a file path ending on .'.concat(this.fileEnding);
     }
+  }
+
+  public onSubmit() {
+    console.log(this.texdocumentForm.value);
   }
 
 }

@@ -1,24 +1,47 @@
 <div>
     <h2>Document Editor</h2>
-    <div>
-        <mat-form-field appearance="fill">
-            <mat-label>Title</mat-label>
-            <input matInput placeholder="Document title" [formControl]="title" required>
-            <mat-error *ngIf="title.invalid">{{getErrorMessage('title')}}</mat-error>
-        </mat-form-field>
-    </div>
-    <div>
-        <mat-form-field appearance="fill">
-            <mat-label>Path</mat-label>
-            <input matInput placeholder="Document path" [formControl]="path" required>
-            <mat-error *ngIf="path.invalid">{{getErrorMessage('path')}}</mat-error>
-        </mat-form-field>
-    </div>
-    <div>
-        <mat-form-field appearance="fill">
-            <mat-label>Author</mat-label>
-            <input matInput [formControl]="author" required>
-            <mat-error *ngIf="path.invalid">{{getErrorMessage('author')}}</mat-error>
-        </mat-form-field>
-    </div>
+    <form [formGroup]="texdocumentForm" (ngSubmit)="onSubmit()">
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Title</mat-label>
+                <input matInput placeholder="Document title" formControlName="title" required>
+                <!-- <mat-error *ngIf="title.invalid">{{getErrorMessage('title')}}</mat-error> -->
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Path</mat-label>
+                <input matInput placeholder="Document path" formControlName="path" required>
+                <!-- <mat-error *ngIf="path.invalid">{{getErrorMessage('path')}}</mat-error> -->
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Author</mat-label>
+                <input matInput formControlName="author" required>
+                <!-- <mat-error *ngIf="author.invalid">{{getErrorMessage('author')}}</mat-error> -->
+            </mat-form-field>
+        </div>
+        <div formArrayName="packages">
+            <mat-form-field appearance="fill">
+                <mat-label>Packages</mat-label>
+                <div *ngFor="let packageGroup of texdocumentForm.get('packages').controls">
+                    <!-- <label>
+                        Package
+                        <input matInput formControlName="packageGroup.get('package')">
+                    </label>
+                    <label>
+                        Options
+                        <div>
+                            <input matInput formControlName="options">
+                        </div>
+                    </label> -->
+                </div>
+            </mat-form-field>
+        </div>
+
+        <div>
+            <button type="submit" [disabled]="!texdocumentForm.valid">Submit</button>
+        </div>
+    </form>
 </div>
