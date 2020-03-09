@@ -1,6 +1,6 @@
 <div>
     <h2>Document Editor</h2>
-    <form [formGroup]="texdocumentForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="texDocumentForm" (ngSubmit)="onSubmit()">
         <div>
             <mat-form-field appearance="fill">
                 <mat-label>Title</mat-label>
@@ -23,25 +23,34 @@
             </mat-form-field>
         </div>
         <div formArrayName="packages">
-            <mat-form-field appearance="fill">
+            <h3>Packages</h3>
+            <mat-form-field
+                *ngIf="packages.length > 0"
+                appearance="fill"
+            >
                 <mat-label>Packages</mat-label>
-                <div *ngFor="let packageGroup of texdocumentForm.get('packages').controls">
-                    <!-- <label>
-                        Package
-                        <input matInput formControlName="packageGroup.get('package')">
-                    </label>
-                    <label>
-                        Options
-                        <div>
-                            <input matInput formControlName="options">
-                        </div>
-                    </label> -->
+                <div >
+                    <div *ngFor="let packageImport of packages.controls">
+                        <label>
+                            Package
+                            <input matInput formControlName="package">
+                        </label>
+                        <label>
+                            Options
+                            <div *ngFor="let option of options.controls">
+                                <input matInput formArrayName="option">
+                            </div>
+                        </label>
+                    </div>
                 </div>
             </mat-form-field>
+            <div>
+                <button (click)="addPackage()">Add Package</button>
+            </div>
         </div>
 
         <div>
-            <button type="submit" [disabled]="!texdocumentForm.valid">Submit</button>
+            <button type="submit" [disabled]="!texDocumentForm.valid">Submit</button>
         </div>
     </form>
 </div>

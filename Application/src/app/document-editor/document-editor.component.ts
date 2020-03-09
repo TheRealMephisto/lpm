@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { FormControl, Validators, FormGroup, FormBuilder, FormArray } from '@angular/forms';
 
 /**
  * Provide a form enabling the user to edit database entries, i.e. of TeX-Documents.
@@ -16,18 +16,16 @@ export class DocumentEditorComponent implements OnInit {
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.texdocumentForm.get('author').setValue('devUser');
+    this.texDocumentForm.get('author').setValue('devUser');
+    console.log(this.packages.length);
+    console.log(this.packages.controls);
   }
 
-  public texdocumentForm = new FormGroup({
+  public texDocumentForm = new FormGroup({
     title: new FormControl('', [Validators.required]),
     path: new FormControl('', [Validators.required, Validators.pattern('.*\.'.concat(this.fileEnding))]),
     author: new FormControl('', [Validators.required]),
     packages: this.fb.array([
-      this.fb.group({
-        package: new FormControl(''),
-        options: this.fb.array([])
-      })
     ])
   });
 
@@ -35,13 +33,13 @@ export class DocumentEditorComponent implements OnInit {
     let targetForm;
     switch(target) {
       case 'title':
-        targetForm = this.texdocumentForm.get('author');
+        targetForm = this.texDocumentForm.get('author');
         break;
       case 'path':
-        targetForm = this.texdocumentForm.get('author');
+        targetForm = this.texDocumentForm.get('author');
         break;
       case 'author':
-        targetForm = this.texdocumentForm.get('author');
+        targetForm = this.texDocumentForm.get('author');
         break;
       default:
         return;
@@ -54,8 +52,32 @@ export class DocumentEditorComponent implements OnInit {
     }
   }
 
+  get packages() {
+    return this.texDocumentForm.get('packages') as FormArray;
+  }
+
+  get packageOptions(): Array<FormArray> {
+    let optionsArray: Array<FormArray>;
+    for (let i = 0; i < this.packages.length; i++) {
+      optionsArray.push(this.packages[i].get('options'));
+    }
+    return optionsArray;
+  }
+
+  public addPackage() {
+    this.packages.push(this.fb.group({
+      package: new FormControl(''),
+      options: this.fb.array([])
+    }));
+    console.log(this.packages);
+  }
+
+  public addOption(index: number) {
+    this.packageOptions[index].push(this.fb.control(''));
+  }
+
   public onSubmit() {
-    console.log(this.texdocumentForm.value);
+    // console.log(this.texDocumentForm.value);
   }
 
 }
