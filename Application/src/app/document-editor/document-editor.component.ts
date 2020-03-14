@@ -19,6 +19,7 @@ export class DocumentEditorComponent implements OnInit {
     this.texDocumentForm.get('author').setValue('devUser');
     console.log(this.packages.length);
     console.log(this.packages.controls);
+    console.log(this.texDocumentForm);
   }
 
   public texDocumentForm = new FormGroup({
@@ -57,9 +58,9 @@ export class DocumentEditorComponent implements OnInit {
   }
 
   get packageOptions(): Array<FormArray> {
-    let optionsArray: Array<FormArray>;
+    let optionsArray: Array<any> = [];
     for (let i = 0; i < this.packages.length; i++) {
-      optionsArray.push(this.packages[i].get('options'));
+      optionsArray.push(this.packages.controls[i].get('options'));
     }
     return optionsArray;
   }
