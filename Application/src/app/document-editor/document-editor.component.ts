@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { DataService } from '../data.service';
 
 /**
  * Provide a form enabling the user to edit database entries, i.e. of TeX-Documents.
@@ -13,7 +14,10 @@ export class DocumentEditorComponent implements OnInit {
 
   fileEnding: string = 'tex'
 
-  constructor(private fb: FormBuilder) { }
+  constructor(
+      private fb: FormBuilder,
+      private dataService: DataService
+    ) { }
 
   ngOnInit() {
     this.texDocumentForm.get('author').setValue('devUser');
@@ -78,7 +82,7 @@ export class DocumentEditorComponent implements OnInit {
   }
 
   public onSubmit() {
-    // console.log(this.texDocumentForm.value);
+    this.dataService.addNewTexDocument(this.texDocumentForm.value);
   }
 
 }

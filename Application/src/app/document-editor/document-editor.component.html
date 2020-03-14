@@ -1,6 +1,8 @@
 <div>
     <h2>Document Editor</h2>
-    <form [formGroup]="texDocumentForm" (ngSubmit)="onSubmit()">
+    <form
+        [formGroup]="texDocumentForm"
+    >
         <div>
             <mat-form-field appearance="fill">
                 <mat-label>Title</mat-label>
@@ -68,7 +70,6 @@
         <div>
             <button
                 type="submit"
-                [disabled]="!texDocumentForm.valid"
                 (click)="onSubmit()"
             >
                 Submit

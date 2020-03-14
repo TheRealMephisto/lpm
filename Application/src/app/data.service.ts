@@ -23,6 +23,37 @@ export class DataService {
     });
   }
 
+  public addNewTexDocument(formData: FormData): void {
+    console.log("DataServive: ", formData);
+    console.log(typeof(formData));
+
+    // ToDo: rewrite API to directly accept JSON
+
+    let filePathList: string = "AwesomeFilePath1,AwesomeFilePath2";
+    let informationList: string = "AwesomeInfo1,AwesomeInfo2";
+    let informationTypeList: string = "AwesomeInfoType1,AwesomeInfoType2";
+    let packageList: string = "AwesomePackage1,AwesomePackage2";
+    let packageOptionsList: string = "AwesomeOpt1,AwesomeOpt2,AwesomeOpt3;AwesomeOpt3,AwesomeOpt4";
+
+    let params: HttpParams = new HttpParams()
+                                .set('title', formData['title'])
+                                .set('path', formData['path'])
+                                .set('username', formData['username'])
+                                .set('filePathList', filePathList)
+                                .set('informationList', informationList)
+                                .set('informationTypeList', informationTypeList)
+                                .set('packageList', packageList)
+                                .set('packageOptionsList', packageOptionsList);
+    console.log("params: ", params);
+    let obs = this.http.get(this.url + '/addTexDocumentEntry', {
+      params: params
+    });
+    obs.subscribe(data => {
+      console.log(data);
+    });
+    
+  }
+
   public addNewContent(): void {
     let title: string = "AwesomeTitle";
     let path: string = "AwesomePath";
