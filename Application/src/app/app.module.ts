@@ -19,13 +19,15 @@ import {MatIconModule} from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
 
 import { ExerciseCompilerComponent } from './exercise-compiler/exercise-compiler.component';
+import { DocumentEditorComponent } from './document-editor/document-editor.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ExplorerComponent,
     DetailviewComponent,
-    ExerciseCompilerComponent
+    ExerciseCompilerComponent,
+    DocumentEditorComponent
   ],
   imports: [
     BrowserModule,

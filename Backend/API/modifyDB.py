@@ -6,6 +6,9 @@ user = ""
 password = ""
 database = "LPMdb"
 
+def sanitiseSQLTerm():
+    pass # ToDo, or check for existing functionality
+
 def getCurrentSqlTimestamp():
     return str(datetime.utcnow())
 
@@ -86,6 +89,32 @@ def getRowsByValues(myCursor, tableName, key, valueList):
     for value in valueList:
         rows.extend(getRowsByValue(myCursor, tableName, key, value))
     return rows
+
+'''
+    This is the function which is going to be used in later releases
+'''
+def addTexDocumentEntryJSON(formData):
+    print(formData)
+    title = formData['title']
+    path = formData['path']
+    username = formData['author']
+    filePathList = formData['files']
+
+    informationArrayList = formData['informationArray']
+    informationList=list()
+    informationTypeList=list()
+    for item in informationArrayList:
+        informationList.append(item['information'])
+        informationTypeList.append(item['type'])
+
+    packageArrayList = formData['packages']
+    packageList=list()
+    packageOptionsList=list()
+    for item in packageArrayList:
+        packageList.append(item['package'])
+        packageOptionsList.append(item['options'])
+    
+    return addTexDocumentEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
 
 
 def addTexDocumentEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList):

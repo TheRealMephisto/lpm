@@ -23,6 +23,16 @@ export class DataService {
     });
   }
 
+  public addNewTexDocument(formData: FormData): void {
+    console.log("DataServive: ", formData);
+    console.log(typeof(formData));
+
+    let obs = this.http.post(this.url + '/addTexDocumentEntry', formData);
+    obs.subscribe(data => {
+      console.log(data);
+    });
+  }
+
   public addNewContent(): void {
     let title: string = "AwesomeTitle";
     let path: string = "AwesomePath";

@@ -1,0 +1,111 @@
+<div>
+    <h2>Document Editor</h2>
+    <form
+        [formGroup]="texDocumentForm"
+    >
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Title</mat-label>
+                <input matInput placeholder="Document title" formControlName="title" required>
+                <!-- <mat-error *ngIf="title.invalid">{{getErrorMessage('title')}}</mat-error> -->
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Path</mat-label>
+                <input matInput placeholder="Document path" formControlName="path" required>
+                <!-- <mat-error *ngIf="path.invalid">{{getErrorMessage('path')}}</mat-error> -->
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Author</mat-label>
+                <input matInput formControlName="author" required>
+                <!-- <mat-error *ngIf="author.invalid">{{getErrorMessage('author')}}</mat-error> -->
+            </mat-form-field>
+        </div>
+        <div>
+            <h3>Packages</h3>
+            <div formArrayName="packages" *ngFor="let packageImport of packages.controls; let i = index">
+                <div
+                    *ngIf="packages.length > 0"
+                >
+                            <div formGroupName="{{i}}">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>
+                                        Package
+                                    </mat-label>
+                                    <input matInput formControlName="package">
+                                </mat-form-field>
+                                <div
+                                    formArrayName="options"
+                                >
+                                    <div
+                                        *ngFor="let option of packageImport.controls.options.controls; let j = index"
+                                    >
+                                        <mat-form-field appearance="fill">
+                                            <mat-label>
+                                                Option
+                                            </mat-label>
+                                                <input matInput formControlName="{{j}}">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button (click)="addOption(i)">Add Option</button>
+                                </div>
+                            </div>
+                </div>
+            </div>
+            <div>
+                <button (click)="addPackage()">Add Package</button>
+            </div>
+        </div>
+        <div>
+            <h3>Additional Information</h3>
+            <div formArrayName="informationArray" *ngFor="let item of informationArray.controls; let i = index">
+                <div formGroupName="{{i}}">
+                    <mat-form-field appearance="fill">
+                        <mat-label>
+                            Information Content
+                        </mat-label>
+                        <input matInput formControlName="information">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>
+                            Information Type
+                        </mat-label>
+                        <input matInput formControlName="type">
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button (click)="addInformation()">Add Information</button>
+        </div>
+        <div>
+            <h3>Files to attach</h3>
+            <div formArrayName="files" *ngFor="let item of files.controls; let file = index">
+                <mat-form-field appearance="fill">
+                    <mat-label>
+                        File
+                    </mat-label>
+                    <input matInput formControlName="{{file}}">
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <button (click)="addFile()">Add File</button>
+        </div>
+
+
+        <div>
+            <button
+                type="submit"
+                (click)="onSubmit()"
+            >
+                Submit
+            </button>
+        </div>
+    </form>
+</div>
