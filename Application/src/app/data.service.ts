@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
-  public getTexDocumentEntries(startAt: number, maxResults: number) {
+  public getTexDocumentEntries(startAt: number, maxResults: number): Observable<Object> {
     let params: HttpParams = new HttpParams()
                                 .set('startAt', startAt.toString())
                                 .set('maxResults', maxResults.toString());
@@ -18,9 +19,7 @@ export class DataService {
     let request = this.http.get(this.url + '/getTexDocumentEntries', {
       params: params
     });
-    request.subscribe(data => {
-      console.log(data);
-    });
+    return request;
   }
 
   public addNewTexDocument(formData: FormData): void {

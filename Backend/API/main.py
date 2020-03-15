@@ -17,8 +17,9 @@ def getTexDocumentEntries():
     else:
         startAt = int(request.args.get('startAt'))
         maxResults = int(request.args.get('maxResults'))
+        entries = dbUtil.getTexDocumentEntries(startAt, maxResults)
 
-        return {'sumOfArguments' : startAt + maxResults, 'entries' : dbUtil.getTexDocumentEntries(startAt, maxResults)}
+        return {'sumOfArguments' : startAt + maxResults, 'entries' : entries}
 
 @app.route("/api/addTexDocumentEntry", methods=['POST', 'GET'])
 def addTexDocumentEntry():

@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild, Output, Input, EventEmitter, SimpleChange } from '@angular/core';
 
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 
 import { sampleExercises } from '../sample-data';
 import { TeXDocument } from '../model/texdocument';
 import { DataService } from '../data.service';
+import { Observable } from 'rxjs';
 
 export interface PeriodicElement {
   title: string;
@@ -53,7 +52,8 @@ export class ExplorerComponent implements OnInit {
   explorerFormControl = new FormControl();
 
   displayedColumns: string[] = ['title', 'version', 'creationDate'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  dataSourceObs: Observable<Object>;
+  dataSource: MatTableDataSource<PeriodicElement> = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
   expandedElement: PeriodicElement | null;
 
   selectedRow: PeriodicElement | null;
@@ -64,6 +64,23 @@ export class ExplorerComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
+    this.dataSourceObs = this.dataService.getTexDocumentEntries(1, 3);
+    console.log(this.dataSourceObs);
+    this.dataSourceObs.subscribe(data => {
+      this.dataSource = new MatTableDataSource<PeriodicElement>(this.JSONToPeriodicElementsArray(data));
+    });
+  }
+
+  private JSONToPeriodicElementsArray(data): PeriodicElement[] {
+    let outputArray: Array<PeriodicElement> = [];
+    for (let i = 1; i <= data['entries']['totalResultCount']; i++) {
+      outputArray.push({
+        title : data['entries'][i]['title'],
+        version: 0,
+        creationDate: "17.03.2020"
+      });
+    }
+    return outputArray;
   }
 
   applyFilter(filterValue: string) {
@@ -91,7 +108,7 @@ export class ExplorerComponent implements OnInit {
   }
 
   public getEntriesTest() {
-    this.dataService.getTexDocumentEntries(1, 5);
+    this.dataService.getTexDocumentEntries(1, 3);
   }
 
 }

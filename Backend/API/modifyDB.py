@@ -307,12 +307,15 @@ def getTexDocumentEntry(contentId):
 '''
 def getTexDocumentEntries(startAt, maxResults):
     texDocumentEntries = dict()
+    totalResultCount = 0
     for i in range(startAt, startAt + maxResults):
         candidate = getTexDocumentEntry(i)
         if candidate != -1:
             texDocumentEntries[str(i)] = candidate
+            totalResultCount += 1
         else:
             break
+    texDocumentEntries['totalResultCount'] = totalResultCount
     return texDocumentEntries
 
 if __name__ == "__main__":
