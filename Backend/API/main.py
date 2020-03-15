@@ -24,8 +24,9 @@ def getTexDocumentEntries():
 def addTexDocumentEntry():
     entry = ""
     if request.method == 'POST':
-        entry = request.form['entry']
-        print(entry)
+        print(request.get_json())
+        procedureProtocol = dbUtil.addTexDocumentEntryJSON(request.get_json())
+        return {'output': 'New Entry!', 'procedureProtocol': procedureProtocol}
     else:
         entry = request.args.get('entry')
 
