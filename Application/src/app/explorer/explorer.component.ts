@@ -77,7 +77,7 @@ export class ExplorerComponent implements OnInit {
       outputArray.push({
         title : data['entries'][i]['title'],
         version: 0,
-        creationDate: "17.03.2020"
+        creationDate: data['entries'][i]['creationDate']
       });
     }
     return outputArray;

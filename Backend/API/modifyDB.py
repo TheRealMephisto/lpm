@@ -63,7 +63,7 @@ def ensureEntryInTable(myCursor, tableName, valueDict, userId='1'):
         tableId = getIdOfDataInTable(myCursor, 'existingTables', {'tableName': tableName})
         insertDataIntoTable(myCursor, tableName, valueDict)
         entryId = getIdOfDataInTable(myCursor, tableName, valueDict)
-        insertDataIntoTable(myCursor, 'editHistory', {'date': getCurrentSqlTimestamp(), 'userId': 1, 'tableId': tableId, 'rowId': entryId, 'description': 'Added'})
+        insertDataIntoTable(myCursor, 'editHistory', {'date': getCurrentSqlTimestamp(), 'userId':  userId, 'tableId': tableId, 'rowId': entryId, 'description': 'Added'})
         protocolEntry = 'Successfully added entry: ' + str(valueDict)
     else:
         protocolEntry = 'Entry existed already: ' + str(valueDict)
@@ -73,7 +73,7 @@ def ensureEntryInTable(myCursor, tableName, valueDict, userId='1'):
     MySQL command for retrieval of a specific entry given a value of a specific column in a given table
 '''
 def getRowsByValue(myCursor, tableName, key, value):
-    command = "SELECT * from `" + tableName + "` WHERE `" + key + "` = " + str(value)
+    command = "SELECT * from `" + tableName + "` WHERE `" + key + "` = '" + str(value) + "'"
     myCursor.execute(command)
     results = myCursor.fetchall()
     if len(results) > 0:
@@ -89,6 +89,29 @@ def getRowsByValues(myCursor, tableName, key, valueList):
     for value in valueList:
         rows.extend(getRowsByValue(myCursor, tableName, key, value))
     return rows
+
+'''
+    Get rows inside a table using a where clause matching different values in different columns, specified by keyAndValueDict
+'''
+def getRowsByKeysAndValues(myCursor, tableName, keyAndValueDict):
+    command = "SELECT * from `" + tableName + "` "
+    firstIteration = True
+    for key, value in keyAndValueDict.items():
+        if firstIteration:
+            command += "WHERE "
+            firstIteration = False
+        else:
+            command += "AND "
+        command += "`" + key + "` = '" + str(value) + "'"
+    myCursor.execute(command)
+    results = myCursor.fetchall()
+    if len(results) > 0:
+        return results
+    return -1
+
+def getFirstRowByKeysAndValues(myCursor, tableName, keyAndValueDict):
+    rows = getRowsByKeysAndValues(myCursor, tableName, keyAndValueDict)
+    return rows[0] if rows != -1 else -1
 
 '''
     This is the function which is going to be used in later releases
@@ -139,6 +162,7 @@ def addTexDocumentEntry(title, path, username, filePathList, informationList, in
     # Add information type and information if not already existing
     informationTypeIds = list()
     informationIds = list()
+    creationDateProvided = False
     if len(informationTypeList) != len(informationList):
         print("Error! informationList and informationTypeList must be of same length!")
         procedureProtocol['databaseTableStatuses']['informationType'] = 'Error! informationList and informationTypeList must be of same length!'
@@ -147,6 +171,19 @@ def addTexDocumentEntry(title, path, username, filePathList, informationList, in
         procedureProtocol['databaseTableStatuses']['informationType'] = dict()
         procedureProtocol['databaseTableStatuses']['information'] = dict()
     for i in range(0, len(informationTypeList)):
+        if informationTypeList[i] == 'creationDate':
+            creationDateProvided = True
+    if not creationDateProvided:
+        dataDictToAdd= {'type' : 'creationDate'}
+        insertionOutput = ensureEntryInTable(myCursor, 'informationType', dataDictToAdd)
+        procedureProtocol['databaseTableStatuses']['informationType']['0'] = insertionOutput['protocolEntry']
+        informationTypeIds.append(insertionOutput['entryId'])
+
+        dataDictToAdd = {'information' : getCurrentSqlTimestamp(), 'informationTypeId' : insertionOutput['entryId']}
+        insertionOutput = ensureEntryInTable(myCursor, 'information', dataDictToAdd)
+        procedureProtocol['databaseTableStatuses']['information']['0'] = insertionOutput['protocolEntry']
+        informationIds.append(insertionOutput['entryId'])
+    for i in range(0 if creationDateProvided else 1, len(informationTypeList)):
         dataDictToAdd = {'type' : informationTypeList[i]}
         insertionOutput = ensureEntryInTable(myCursor, 'informationType', dataDictToAdd)
         procedureProtocol['databaseTableStatuses']['informationType'][str(i)] = insertionOutput['protocolEntry']
@@ -256,41 +293,66 @@ def getTexDocumentEntry(contentId):
 
     # todo: get the user who created the content entry via editHistory table
     index = getRowsByValue(myCursor, 'contentRuser', 'contentId', contentId)
+    if index == -1:
+        return -2 # entry exists, but mandatory value is missing!
     texDocumentEntry['username'] = getFirstRowByValue(myCursor, 'users', 'id', index[0][2])[1]
 
     indices = list()
     rows = getRowsByValue(myCursor, 'contentRfile', 'contentId', contentId)
-    for row in rows:
-        indices.append(row[2])
-    texDocumentEntry['filePaths'] = dict()
-    for i in range(0, len(indices)):
-        texDocumentEntry['filePaths'][str(i)] = getFirstRowByValue(myCursor, 'files', 'id', indices[i])[1]
+    if rows != -1:
+        for row in rows:
+            indices.append(row[2])
+        texDocumentEntry['filePaths'] = dict()
+        for i in range(0, len(indices)):
+            texDocumentEntry['filePaths'][str(i)] = getFirstRowByValue(myCursor, 'files', 'id', indices[i])[1]
 
     texDocumentEntry['information'] = dict()
     indices = list()
     rows = getRowsByValue(myCursor, 'contentRinformation', 'contentId', contentId)
-    for row in rows:
-        indices.append(row[2])
-    rows = getRowsByValues(myCursor, 'information', 'id', indices)
-    for i in range(0, len(rows)):
-        texDocumentEntry['information'][str(i)] = dict()
-        texDocumentEntry['information'][str(i)]['information'] = row[1]
-        texDocumentEntry['information'][str(i)]['type'] = getFirstRowByValue(myCursor, 'informationType', 'id', row[2])[1]
+    if rows != -1:
+        for row in rows:
+            indices.append(row[2])
+        rows = getRowsByValues(myCursor, 'information', 'id', indices)
+        for i in range(0, len(rows)):
+            texDocumentEntry['information'][str(i)] = dict()
+            texDocumentEntry['information'][str(i)]['information'] = rows[i][1]
+            texDocumentEntry['information'][str(i)]['type'] = getFirstRowByValue(myCursor, 'informationType', 'id', rows[i][2])[1]
     
 
     texDocumentEntry['packages'] = dict()
     indices = list() # indices will hold the indices of packages belonging to the content
     rows = getRowsByValue(myCursor, 'contentRpackage', 'contentId', contentId)
-    for row in rows:
-        indices.append(row[2])
-    rows = getRowsByValues(myCursor, 'packages', 'id', indices)
-    for i in range(0, len(rows)):
-        texDocumentEntry['packages'][str(i)] = dict()
-        texDocumentEntry['packages'][str(i)]['package'] = rows[i][1]
-        relationRows = getRowsByValue(myCursor, 'packageRoption', 'packageId', rows[i][0])
-        texDocumentEntry['packages'][str(i)]['options'] = dict()
-        for j in range(0, len(relationRows)):
-            texDocumentEntry['packages'][str(i)]['options'][str(j)] = getFirstRowByValue(myCursor, 'packageOptions', 'id', relationRows[j][2])[1]
+    if rows != -1:
+        for row in rows:
+            indices.append(row[2])
+        rows = getRowsByValues(myCursor, 'packages', 'id', indices)
+        for i in range(0, len(rows)):
+            texDocumentEntry['packages'][str(i)] = dict()
+            texDocumentEntry['packages'][str(i)]['package'] = rows[i][1]
+            relationRows = getRowsByValue(myCursor, 'packageRoption', 'packageId', rows[i][0])
+            texDocumentEntry['packages'][str(i)]['options'] = dict()
+            for j in range(0, len(relationRows)):
+                texDocumentEntry['packages'][str(i)]['options'][str(j)] = getFirstRowByValue(myCursor, 'packageOptions', 'id', relationRows[j][2])[1]
+
+    foundCreationDate = False
+    row = getFirstRowByValue(myCursor, 'informationType', 'type', 'creationDate')
+    if row != -1:
+        creationDateInformationTypeId = row[0]
+        anotherRow = getFirstRowByValue(myCursor, 'contentRinformation', 'contentId', contentId)
+        if anotherRow != -1:
+            informationId = anotherRow[2]
+            keyAndValueDict = {
+                'id': informationId,
+                'informationTypeId': creationDateInformationTypeId
+            }
+            yetAnotherRow = getFirstRowByKeysAndValues(myCursor, 'information', keyAndValueDict)
+            if yetAnotherRow != -1:
+                texDocumentEntry['creationDate'] = yetAnotherRow[1]
+                foundCreationDate = True
+    if not foundCreationDate:
+        contentTableId = getFirstRowByValue(myCursor, 'existingTables', 'tableName', 'contents')[0]
+        texDocumentEntry['creationDate'] = getFirstRowByValue(myCursor, 'editHistory', 'tableId', contentTableId)[1]
+
             
     mydbConnector.commit()
     mydbConnector.close()
@@ -310,7 +372,7 @@ def getTexDocumentEntries(startAt, maxResults):
     totalResultCount = 0
     for i in range(startAt, startAt + maxResults):
         candidate = getTexDocumentEntry(i)
-        if candidate != -1:
+        if candidate != -1 and candidate != -2: # there exist several error codes! -1, -2
             texDocumentEntries[str(i)] = candidate
             totalResultCount += 1
         else:
