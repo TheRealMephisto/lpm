@@ -14,6 +14,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material'
 import {MatInputModule} from '@angular/material';
+import { MatSelectModule } from '@angular/material';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
@@ -39,6 +40,7 @@ import { DocumentEditorComponent } from './document-editor/document-editor.compo
     MatFormFieldModule,
     MatAutocompleteModule,
     MatTableModule,
+    MatSelectModule,
     MatPaginatorModule,
     MatInputModule,
     MatButtonModule,

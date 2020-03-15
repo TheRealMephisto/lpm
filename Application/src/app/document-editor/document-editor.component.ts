@@ -14,6 +14,8 @@ export class DocumentEditorComponent implements OnInit {
 
   @Output() submitted: EventEmitter<any> = new EventEmitter<any>();
 
+  public informationTypes: Array<string>;
+
   fileEnding: string = 'tex'
 
   constructor(
@@ -23,9 +25,9 @@ export class DocumentEditorComponent implements OnInit {
 
   ngOnInit() {
     this.texDocumentForm.get('author').setValue('devUser');
-    console.log(this.packages.length);
-    console.log(this.packages.controls);
-    console.log(this.texDocumentForm);
+    this.dataService.getInformationTypes().subscribe(data => {
+      this.informationTypes = this.dataService.JsonToArray(data);
+    });
   }
 
   public texDocumentForm = new FormGroup({

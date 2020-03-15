@@ -10,6 +10,18 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}}) # intermediate, adjust
 def index():
     return ("Hello World")
 
+@app.route("/api/getInformationTypes", methods=['POST', 'GET'])
+def getInformationTypes():
+    if request.method == 'POST':
+        pass
+    else:
+        informationTypes = dbUtil.getInformationTypes()
+        totalResultCount = len(informationTypes)
+        return {
+            'entries': informationTypes,
+            'totalResultCount': totalResultCount
+        }
+
 @app.route("/api/getTexDocumentEntries", methods=['POST', 'GET'])
 def getTexDocumentEntries():
     if request.method == 'POST':

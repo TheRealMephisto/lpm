@@ -75,7 +75,11 @@
                         <mat-label>
                             Information Type
                         </mat-label>
-                        <input matInput formControlName="type">
+                        <mat-select>
+                            <mat-option *ngFor="let type of informationTypes">
+                                {{type}}
+                            </mat-option>
+                        </mat-select>
                     </mat-form-field>
                 </div>
             </div>

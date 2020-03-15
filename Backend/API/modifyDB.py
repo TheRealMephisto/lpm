@@ -94,14 +94,14 @@ def getRowsByValues(myCursor, tableName, key, valueList):
     Get rows inside a table using a where clause matching different values in different columns, specified by keyAndValueDict
 '''
 def getRowsByKeysAndValues(myCursor, tableName, keyAndValueDict):
-    command = "SELECT * from `" + tableName + "` "
+    command = "SELECT * from `" + tableName + "`"
     firstIteration = True
     for key, value in keyAndValueDict.items():
         if firstIteration:
-            command += "WHERE "
+            command += " WHERE "
             firstIteration = False
         else:
-            command += "AND "
+            command += " AND "
         command += "`" + key + "` = '" + str(value) + "'"
     myCursor.execute(command)
     results = myCursor.fetchall()
@@ -113,11 +113,39 @@ def getFirstRowByKeysAndValues(myCursor, tableName, keyAndValueDict):
     rows = getRowsByKeysAndValues(myCursor, tableName, keyAndValueDict)
     return rows[0] if rows != -1 else -1
 
+def getAllRows(myCursor, tableName):
+    return getRowsByKeysAndValues(myCursor, tableName, {})
+
+def getTableHeaders(myCursor, tableName):
+    # ToDo: execute mysql command to get the list of headers in a table
+    pass
+
+'''
+    Retrive a list of values given a list of rows of a table and the specific column header
+'''
+def getValuesByKey(rows, header):
+    pass
+
+'''
+    Get all available information types
+'''
+def getInformationTypes():
+    mydbConnector = connectDB()
+    myCursor = getCursor(mydbConnector)
+
+    informationTypes = list()
+
+    rows = getAllRows(myCursor,'informationType')
+    if rows != -1:
+        for row in rows:
+            informationTypes.append(row[1])
+
+    return informationTypes
+
 '''
     This is the function which is going to be used in later releases
 '''
 def addTexDocumentEntryJSON(formData):
-    print(formData)
     title = formData['title']
     path = formData['path']
     username = formData['author']
