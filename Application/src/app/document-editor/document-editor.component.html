@@ -30,7 +30,6 @@
                 <div
                     *ngIf="packages.length > 0"
                 >
-                        <div >
                             <div formGroupName="{{i}}">
                                 <mat-form-field appearance="fill">
                                     <mat-label>
@@ -38,7 +37,6 @@
                                     </mat-label>
                                     <input matInput formControlName="package">
                                 </mat-form-field>
-                                <h5>Options</h5>
                                 <div
                                     formArrayName="options"
                                 >
@@ -49,9 +47,7 @@
                                             <mat-label>
                                                 Option
                                             </mat-label>
-                                                <div>
-                                                    <input matInput formControlName="{{j}}">
-                                                </div>
+                                                <input matInput formControlName="{{j}}">
                                         </mat-form-field>
                                     </div>
                                 </div>
@@ -59,13 +55,49 @@
                                     <button (click)="addOption(i)">Add Option</button>
                                 </div>
                             </div>
-                        </div>
                 </div>
             </div>
             <div>
                 <button (click)="addPackage()">Add Package</button>
             </div>
         </div>
+        <div>
+            <h3>Additional Information</h3>
+            <div formArrayName="informationArray" *ngFor="let item of informationArray.controls; let i = index">
+                <div formGroupName="{{i}}">
+                    <mat-form-field appearance="fill">
+                        <mat-label>
+                            Information Content
+                        </mat-label>
+                        <input matInput formControlName="information">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>
+                            Information Type
+                        </mat-label>
+                        <input matInput formControlName="type">
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button (click)="addInformation()">Add Information</button>
+        </div>
+        <div>
+            <h3>Files to attach</h3>
+            <div formArrayName="files" *ngFor="let item of files.controls; let file = index">
+                <mat-form-field appearance="fill">
+                    <mat-label>
+                        File
+                    </mat-label>
+                    <input matInput formControlName="{{file}}">
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <button (click)="addFile()">Add File</button>
+        </div>
+
 
         <div>
             <button

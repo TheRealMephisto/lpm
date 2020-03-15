@@ -30,8 +30,9 @@ export class DocumentEditorComponent implements OnInit {
     title: new FormControl('', [Validators.required]),
     path: new FormControl('', [Validators.required, Validators.pattern('.*\.'.concat(this.fileEnding))]),
     author: new FormControl('', [Validators.required]),
-    packages: this.fb.array([
-    ])
+    packages: this.fb.array([]),
+    files: this.fb.array([]),
+    informationArray: this.fb.array([])
   });
 
   getErrorMessage(target: string): string {
@@ -57,8 +58,28 @@ export class DocumentEditorComponent implements OnInit {
     }
   }
 
-  get packages() {
+  get packages(): FormArray {
     return this.texDocumentForm.get('packages') as FormArray;
+  }
+
+  get files(): FormArray {
+    return this.texDocumentForm.get('files') as FormArray;
+  }
+
+  public addFile(): void {
+    this.files.push(this.fb.control(''));
+  }
+
+  get informationArray(): FormArray {
+    return this.texDocumentForm.get('informationArray') as FormArray;
+  }
+
+  public addInformation(): void {
+    this.informationArray.push(this.fb.group({
+      information: new FormControl(''),
+      type: new FormControl('')
+    }));
+    console.log(this.informationArray);
   }
 
   get packageOptions(): Array<FormArray> {
@@ -69,7 +90,7 @@ export class DocumentEditorComponent implements OnInit {
     return optionsArray;
   }
 
-  public addPackage() {
+  public addPackage(): void {
     this.packages.push(this.fb.group({
       package: new FormControl(''),
       options: this.fb.array([])
@@ -77,11 +98,11 @@ export class DocumentEditorComponent implements OnInit {
     console.log(this.packages);
   }
 
-  public addOption(index: number) {
+  public addOption(index: number): void {
     this.packageOptions[index].push(this.fb.control(''));
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     this.dataService.addNewTexDocument(this.texDocumentForm.value);
   }
 
