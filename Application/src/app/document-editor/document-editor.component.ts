@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl, Validators, FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { DataService } from '../data.service';
 
@@ -11,6 +11,8 @@ import { DataService } from '../data.service';
   styleUrls: ['./document-editor.component.scss']
 })
 export class DocumentEditorComponent implements OnInit {
+
+  @Output() submitted: EventEmitter<any> = new EventEmitter<any>();
 
   fileEnding: string = 'tex'
 
@@ -104,6 +106,7 @@ export class DocumentEditorComponent implements OnInit {
 
   public onSubmit(): void {
     this.dataService.addNewTexDocument(this.texDocumentForm.value);
+    this.submitted.emit();
   }
 
 }

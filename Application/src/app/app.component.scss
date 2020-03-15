@@ -26,6 +26,15 @@
     padding: 1vh 1vw 1vh 1vw;
 }
 
+.e-container {
+    width: 47vw;
+    height: 78vh;
+    max-height: 80vh;
+    border: 1px solid $primary;
+    overflow-y: auto;
+    padding: 1vh 1vw 1vh 1vw;
+}
+
 .nav-back {
     width: 100%;
     border-bottom: 1px solid $primary;

@@ -48,6 +48,7 @@ export class ExplorerComponent implements OnInit {
 
   @Input() selectedDocument: TeXDocument;
   @Output() selectedDocumentChange: EventEmitter<TeXDocument> = new EventEmitter<TeXDocument>();
+  @Output() addDocument: EventEmitter<any> = new EventEmitter<any>();
 
   explorerFormControl = new FormControl();
 
@@ -72,6 +73,10 @@ export class ExplorerComponent implements OnInit {
 
   ngOnChange(change: SimpleChange) {
     console.log(change);
+  }
+
+  public addDocumentTrigger() {
+    this.addDocument.emit();
   }
 
   public onClick(row) {

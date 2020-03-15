@@ -12,9 +12,11 @@ export class AppComponent {
   selectedDoc: TeXDocument;
 
   viewCompiler: boolean;
+  viewEditor: boolean;
 
   ngOnInit() {
     this.viewCompiler = true;
+    this.viewEditor = false;
   }
 
   public selectDocument(event) {
@@ -24,5 +26,13 @@ export class AppComponent {
 
   public backToCompiler() {
     this.viewCompiler = true;
+  }
+
+  public showEditor() {
+    this.viewEditor = true;
+  }
+
+  public documentEdited() {
+    this.viewEditor = false;
   }
 }

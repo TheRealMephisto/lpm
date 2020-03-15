@@ -3,8 +3,14 @@
 </div>
 
 <div class="container">
-  <app-explorer class="explorer" (selectedDocumentChange)="selectDocument($event)">
-  </app-explorer>
+  <div *ngIf="!viewEditor" class="e-container">
+    <app-explorer class="explorer" (selectedDocumentChange)="selectDocument($event)" (addDocument)="showEditor()">
+    </app-explorer>
+  </div>
+  <div *ngIf="viewEditor" class="e-container">
+    <app-document-editor (submitted)="documentEdited()"></app-document-editor>
+  </div>
+  
   <app-exercise-compiler *ngIf="viewCompiler" class="dv-container"></app-exercise-compiler>
   <div *ngIf="!viewCompiler" class="dv-container">
     <div class="nav-back">

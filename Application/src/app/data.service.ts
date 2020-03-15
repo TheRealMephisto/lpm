@@ -31,7 +31,6 @@ export class DataService {
     obs.subscribe(data => {
       console.log(data);
     });
-    
   }
 
   public addNewContent(): void {
