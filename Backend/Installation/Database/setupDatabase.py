@@ -73,9 +73,9 @@ if __name__ == "__main__":
         "contentRinformation" : "CREATE TABLE contentRinformation (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, informationId INT)",
         "contentRpackage" : "CREATE TABLE contentRpackage (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, packageId INT)",
         "contentRuser" : "CREATE TABLE contentRuser (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, userId INT)",
-        "packages" : "CREATE TABLE packages (id INT AUTO_INCREMENT PRIMARY KEY, package VARCHAR(255))",
+        "packages" : "CREATE TABLE packages (id INT AUTO_INCREMENT PRIMARY KEY, package VARCHAR(255), description VARCHAR(255))",
         "packageRoption": "CREATE TABLE packageRoption (id INT AUTO_INCREMENT PRIMARY KEY, packageId INT, optionId INT)",
-        "packageOptions": "CREATE TABLE packageOptions (id INT AUTO_INCREMENT PRIMARY KEY, option VARCHAR(255))",
+        "packageOptions": "CREATE TABLE packageOptions (id INT AUTO_INCREMENT PRIMARY KEY, option VARCHAR(255), description VARCHAR(255))",
         "editHistory" : "CREATE TABLE editHistory (id INT AUTO_INCREMENT PRIMARY KEY, date TIMESTAMP, userId INT, tableId INT, rowId INT, description VARCHAR(255))", # is this functionality really needed? Compare use with effort!
         "users" : "CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255))",
         "existingTables" : "CREATE TABLE existingTables (id INT AUTO_INCREMENT PRIMARY KEY, tableName VARCHAR(255))"
