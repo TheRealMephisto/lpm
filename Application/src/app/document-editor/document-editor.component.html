@@ -30,35 +30,39 @@
                 <div
                     *ngIf="packages.length > 0"
                 >
-                            <div formGroupName="{{i}}">
+                    <div
+                        formGroupName="{{i}}"
+                        class="grid-wrapper"
+                    >
+                        <mat-form-field appearance="fill">
+                            <mat-label>
+                                Package
+                            </mat-label>
+                            <input matInput formControlName="package">
+                        </mat-form-field>
+                        <div
+                            formArrayName="options"
+                        >
+                            <div
+                                *ngFor="let option of packageImport.controls.options.controls; let j = index"
+                            >
                                 <mat-form-field appearance="fill">
                                     <mat-label>
-                                        Package
+                                        Option
                                     </mat-label>
-                                    <input matInput formControlName="package">
+                                        <input matInput formControlName="{{j}}">
                                 </mat-form-field>
-                                <div
-                                    formArrayName="options"
-                                >
-                                    <div
-                                        *ngFor="let option of packageImport.controls.options.controls; let j = index"
-                                    >
-                                        <mat-form-field appearance="fill">
-                                            <mat-label>
-                                                Option
-                                            </mat-label>
-                                                <input matInput formControlName="{{j}}">
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                                <div>
-                                    <button (click)="addOption(i)">Add Option</button>
-                                </div>
                             </div>
+                        </div>
+                        <div>
+                            <button mat-raised-button color="accent" (click)="addOption(i)">Add Option</button>
+                        </div>
+                    </div>
+                    <br>
                 </div>
             </div>
             <div>
-                <button (click)="addPackage()">Add Package</button>
+                <button mat-raised-button color="accent" (click)="addPackage()">Add Package</button>
             </div>
         </div>
         <div>
@@ -85,7 +89,7 @@
             </div>
         </div>
         <div>
-            <button (click)="addInformation()">Add Information</button>
+            <button mat-raised-button color="accent" (click)="addInformation()">Add Information</button>
         </div>
         <div>
             <h3>Files to attach</h3>
@@ -99,12 +103,13 @@
             </div>
         </div>
         <div>
-            <button (click)="addFile()">Add File</button>
+            <button mat-raised-button color="accent" (click)="addFile()">Add File</button>
         </div>
 
 
+        <br>
         <div>
-            <button
+            <button  mat-raised-button color="accent"
                 type="submit"
                 (click)="onSubmit()"
             >
@@ -112,4 +117,5 @@
             </button>
         </div>
     </form>
+    <br>
 </div>
