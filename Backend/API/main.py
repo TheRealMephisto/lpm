@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_cors import CORS
-import modifyDB as dbUtil
+import dbUtils
 import argumentHelper as argUtil
 
 app = Flask(__name__)
@@ -15,7 +15,7 @@ def getInformationTypes():
     if request.method == 'POST':
         pass
     else:
-        informationTypes = dbUtil.getInformationTypes()
+        informationTypes = dbUtils.getInformationTypes()
         totalResultCount = len(informationTypes)
         return {
             'entries': informationTypes,
@@ -29,7 +29,7 @@ def getTexDocumentEntries():
     else:
         startAt = int(request.args.get('startAt'))
         maxResults = int(request.args.get('maxResults'))
-        entries = dbUtil.getTexDocumentEntries(startAt, maxResults)
+        entries = dbUtils.getTexDocumentEntries(startAt, maxResults)
 
         return {'sumOfArguments' : startAt + maxResults, 'entries' : entries}
 
@@ -38,7 +38,7 @@ def addTexDocumentEntry():
     entry = ""
     if request.method == 'POST':
         print(request.get_json())
-        procedureProtocol = dbUtil.addTexDocumentEntryJSON(request.get_json())
+        procedureProtocol = dbUtils.addTexDocumentEntryJSON(request.get_json())
         return {'output': 'New Entry!', 'procedureProtocol': procedureProtocol}
     else:
         entry = request.args.get('entry')
@@ -62,7 +62,7 @@ def addTexDocumentEntry():
             packageOptionsList.append(argUtil.stringToList(packageOptionsRaw))
 
 
-        procedureProtocol = dbUtil.addTexDocumentEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
+        procedureProtocol = dbUtils.addTexDocumentEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
     return {'output': 'New Entry!', 'procedureProtocol': procedureProtocol}
 
 if __name__ == '__main__':
