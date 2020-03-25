@@ -101,14 +101,4 @@ export class ExplorerComponent implements OnInit {
     let selectedDocument = sampleExercises.find((x) => x.title == this.selectedRow.title && x.version == this.selectedRow.version);
     this.selectedDocumentChange.emit(selectedDocument);
   }
-
-  public addNewContent() {
-    console.log("button pressed, asking dataService to add content")
-    this.dataService.addNewContent();
-  }
-
-  public getEntriesTest() {
-    this.dataService.getTexDocumentEntries(1, 3);
-  }
-
 }
