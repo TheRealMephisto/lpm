@@ -311,6 +311,7 @@ def getTexDocumentEntry(contentId):
     myCursor = getCursor(mydbConnector)
 
     texDocumentEntry = dict()
+    texDocumentEntry['contentId'] = contentId
 
     rows = getRowsByValue(myCursor, 'contents', 'id', contentId)
     if rows == -1:
