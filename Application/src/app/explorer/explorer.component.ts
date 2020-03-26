@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, Input, EventEmitter, SimpleChange } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, Input, EventEmitter, SimpleChange, ChangeDetectorRef } from '@angular/core';
 
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
@@ -8,12 +8,8 @@ import { sampleExercises } from '../sample-data';
 import { TeXDocument } from '../model/texdocument';
 import { DataService } from '../data.service';
 import { Observable } from 'rxjs';
+import { PeriodicElement } from '../periodic-elements';
 
-export interface PeriodicElement {
-  title: string;
-  version: number;
-  creationDate: string;
-}
 
 
 const ELEMENT_DATA: PeriodicElement[] = [
@@ -42,6 +38,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
+  // changeDetection: ChangeDetectionStrategy.OnPU
 })
 export class ExplorerComponent implements OnInit {
 
@@ -60,27 +57,30 @@ export class ExplorerComponent implements OnInit {
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator; // static: true -> make it available during ngOnInit
 
-  constructor(private dataService: DataService) { }
+  constructor(
+    private dataService: DataService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
-    this.dataSourceObs = this.dataService.getTexDocumentEntries(1, 3);
-    console.log(this.dataSourceObs);
-    this.dataSourceObs.subscribe(data => {
-      this.dataSource = new MatTableDataSource<PeriodicElement>(this.JSONToPeriodicElementsArray(data));
+    this.dataService.subject.subscribe((TeXDocuments: Array<TeXDocument>) => {
+      this.dataSource = new MatTableDataSource<PeriodicElement>(this.TeXDocumentsToPeriodicElementsArray(TeXDocuments));
+      this.cdr.detectChanges();
     });
+    this.dataService.getTexDocumentEntries(1, 3);
   }
 
-  private JSONToPeriodicElementsArray(data): PeriodicElement[] {
+  private TeXDocumentsToPeriodicElementsArray(TeXDocuments: Array<TeXDocument>): Array<PeriodicElement> {
     let outputArray: Array<PeriodicElement> = [];
-    for (let i = 1; i <= data['entries']['totalResultCount']; i++) {
+    for (const texDoc of TeXDocuments) {
       outputArray.push({
-        title : data['entries'][i]['title'],
-        version: 0,
-        creationDate: data['entries'][i]['creationDate']
+        title : texDoc.title,
+        version: texDoc.version,
+        creationDate: texDoc.creationDate.toString()
       });
     }
-    return outputArray;
+    return;
   }
 
   applyFilter(filterValue: string) {

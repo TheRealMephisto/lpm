@@ -337,32 +337,39 @@ def getTexDocumentEntry(contentId):
             texDocumentEntry['filePaths'][str(i)] = getFirstRowByValue(myCursor, 'files', 'id', indices[i])[1]
 
     texDocumentEntry['information'] = dict()
+    informationCount = 0
     indices = list()
     rows = getRowsByValue(myCursor, 'contentRinformation', 'contentId', contentId)
     if rows != -1:
         for row in rows:
             indices.append(row[2])
         rows = getRowsByValues(myCursor, 'information', 'id', indices)
-        for i in range(0, len(rows)):
+        informationCount = len(rows)
+        for i in range(0, informationCount):
             texDocumentEntry['information'][str(i)] = dict()
             texDocumentEntry['information'][str(i)]['information'] = rows[i][1]
             texDocumentEntry['information'][str(i)]['type'] = getFirstRowByValue(myCursor, 'informationType', 'id', rows[i][2])[1]
-    
+    texDocumentEntry['informationCount'] = informationCount
 
     texDocumentEntry['packages'] = dict()
+    packagesCount = 0
     indices = list() # indices will hold the indices of packages belonging to the content
     rows = getRowsByValue(myCursor, 'contentRpackage', 'contentId', contentId)
     if rows != -1:
         for row in rows:
             indices.append(row[2])
         rows = getRowsByValues(myCursor, 'packages', 'id', indices)
-        for i in range(0, len(rows)):
+        packagesCount = len(rows)
+        for i in range(0, packagesCount):
             texDocumentEntry['packages'][str(i)] = dict()
             texDocumentEntry['packages'][str(i)]['package'] = rows[i][1]
             relationRows = getRowsByValue(myCursor, 'packageRoption', 'packageId', rows[i][0])
             texDocumentEntry['packages'][str(i)]['options'] = dict()
-            for j in range(0, len(relationRows)):
+            optionsCount = len(relationRows)
+            texDocumentEntry['packages'][str(i)]['optionsCount'] = optionsCount
+            for j in range(0, optionsCount):
                 texDocumentEntry['packages'][str(i)]['options'][str(j)] = getFirstRowByValue(myCursor, 'packageOptions', 'id', relationRows[j][2])[1]
+    texDocumentEntry['packagesCount'] = packagesCount
 
     foundCreationDate = False
     row = getFirstRowByValue(myCursor, 'informationType', 'type', 'creationDate')
