@@ -71,6 +71,7 @@ export class DataService {
     request.subscribe(data => {
       for (let i = 1; i <= data['entries']['totalResultCount']; i++) {
         this.TexDocuments.push(this.JsonToTeXDocument(data["entries"][i]));
+        this.subject.next(this.TexDocuments);
       }
     });
     return;
