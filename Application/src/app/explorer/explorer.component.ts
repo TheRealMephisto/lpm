@@ -46,7 +46,6 @@ export class ExplorerComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataService.subject.subscribe((TeXDocuments: Array<TeXDocument>) => {
       this.dataSource = new MatTableDataSource<TeXDocument>(TeXDocuments);
-      this.cdr.detectChanges();
     });
     this.dataService.getTexDocumentEntries(1, 3);
   }

@@ -1,3 +1,6 @@
+# DEPRECATED
+
+
 import mysql.connector
 from datetime import datetime
 
@@ -117,8 +120,12 @@ def getAllRows(myCursor, tableName):
     return getRowsByKeysAndValues(myCursor, tableName, {})
 
 def getTableHeaders(myCursor, tableName):
-    # ToDo: execute mysql command to get the list of headers in a table
-    pass
+    command = "DESCRIBE " + tableName + ";"
+    myCursor.execute(command)
+    results = myCursor.fetchall()
+    if len(results) > 0:
+        return results
+    return -1
 
 '''
     Retrive a list of values given a list of rows of a table and the specific column header
@@ -141,6 +148,7 @@ def getInformationTypes():
             informationTypes.append(row[1])
 
     return informationTypes
+
 
 '''
     This is the function which is going to be used in later releases
@@ -336,6 +344,7 @@ def getTexDocumentEntry(contentId):
         for i in range(0, len(indices)):
             texDocumentEntry['filePaths'][str(i)] = getFirstRowByValue(myCursor, 'files', 'id', indices[i])[1]
 
+    # get information
     texDocumentEntry['information'] = dict()
     informationCount = 0
     indices = list()
@@ -351,6 +360,7 @@ def getTexDocumentEntry(contentId):
             texDocumentEntry['information'][str(i)]['type'] = getFirstRowByValue(myCursor, 'informationType', 'id', rows[i][2])[1]
     texDocumentEntry['informationCount'] = informationCount
 
+    # get packages
     texDocumentEntry['packages'] = dict()
     packagesCount = 0
     indices = list() # indices will hold the indices of packages belonging to the content
@@ -371,7 +381,8 @@ def getTexDocumentEntry(contentId):
                 texDocumentEntry['packages'][str(i)]['options'][str(j)] = getFirstRowByValue(myCursor, 'packageOptions', 'id', relationRows[j][2])[1]
     texDocumentEntry['packagesCount'] = packagesCount
 
-    foundCreationDate = False
+    # Get creation date
+    foundCreationDate = False # flag to ensure a value for creation date!
     row = getFirstRowByValue(myCursor, 'informationType', 'type', 'creationDate')
     if row != -1:
         creationDateInformationTypeId = row[0]
@@ -390,8 +401,28 @@ def getTexDocumentEntry(contentId):
         contentTableId = getFirstRowByValue(myCursor, 'existingTables', 'tableName', 'contents')[0]
         texDocumentEntry['creationDate'] = getFirstRowByValue(myCursor, 'editHistory', 'tableId', contentTableId)[1]
 
-            
-    mydbConnector.commit()
+    # Get keywords
+    row = getRowsByValue(myCursor, 'contentRinformation', 'contentId', contentId)
+    if row != -1:
+        informationIds = []
+        # todo
+
+    row = getFirstRowByValue(myCursor, 'informationType', 'type', 'keyword')
+    if row != -1:
+        keywordInformationTypeId = row[0]
+        anotherRow = getFirstRowByValue(myCursor, 'contentRinformation', 'contentId', 'contentId')
+        if anotherRow != -1:
+            informationId = anotherRow[2]
+            keyAndValueDict = {
+                'id': informationId,
+                'informationTypeId': keywordInformationTypeId
+            }
+            yetAnotherRow = getFirstRowByKeysAndValues(myCursor, 'information', keyAndValueDict)
+            if yetAnotherRow != -1:
+                texDocumentEntry['key']
+
+    # commit and close database connection
+    mydbConnector.commit() # test, if commit is needed at all!
     mydbConnector.close()
 
     return texDocumentEntry

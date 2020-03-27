@@ -1,7 +1,9 @@
 from flask import Flask, request
 from flask_cors import CORS
-import dbUtils
 import argumentHelper as argUtil
+
+from dbUtils.dbReader import dbReader
+from dbUtils.dbWriter import dbWriter
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}}) # intermediate, adjust for production! Just needed for development on local machine.
@@ -15,8 +17,9 @@ def getInformationTypes():
     if request.method == 'POST':
         pass
     else:
-        informationTypes = dbUtils.getInformationTypes()
-        totalResultCount = len(informationTypes)
+        with dbReader() as db_reader:
+            informationTypes = db_reader.getInformationTypes()
+            totalResultCount = len(informationTypes)
         return {
             'entries': informationTypes,
             'totalResultCount': totalResultCount
@@ -29,7 +32,8 @@ def getTexDocumentEntries():
     else:
         startAt = int(request.args.get('startAt'))
         maxResults = int(request.args.get('maxResults'))
-        entries = dbUtils.getTexDocumentEntries(startAt, maxResults)
+        with dbReader() as db_reader:
+            entries = db_reader.getTexDocumentEntries(startAt, maxResults)
 
         return {'sumOfArguments' : startAt + maxResults, 'entries' : entries}
 
@@ -37,8 +41,8 @@ def getTexDocumentEntries():
 def addTexDocumentEntry():
     entry = ""
     if request.method == 'POST':
-        print(request.get_json())
-        procedureProtocol = dbUtils.addTexDocumentEntryJSON(request.get_json())
+        with dbWriter() as db_writer:
+            procedureProtocol = db_writer.addTexDocumentEntryJSON(request.get_json())
         return {'output': 'New Entry!', 'procedureProtocol': procedureProtocol}
     else:
         entry = request.args.get('entry')
@@ -61,8 +65,8 @@ def addTexDocumentEntry():
         for packageOptionsRaw in tmpPackageOptionsList:
             packageOptionsList.append(argUtil.stringToList(packageOptionsRaw))
 
-
-        procedureProtocol = dbUtils.addTexDocumentEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
+        with dbWriter() as db_writer:
+            procedureProtocol = db_writer.addTexDocumentEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
     return {'output': 'New Entry!', 'procedureProtocol': procedureProtocol}
 
 if __name__ == '__main__':
