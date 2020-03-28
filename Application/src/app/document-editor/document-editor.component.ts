@@ -16,6 +16,8 @@ export class DocumentEditorComponent implements OnInit {
 
   public informationTypes: Array<string>;
 
+  public informationViewArray: Array<string>;
+
   fileEnding: string = 'tex'
 
   constructor(
@@ -28,6 +30,7 @@ export class DocumentEditorComponent implements OnInit {
     this.dataService.getInformationTypes().subscribe(data => { // todo: handle observable inside data.service
       this.informationTypes = this.dataService.JsonToArray(data);
     });
+    this.informationViewArray = [];
   }
 
   public texDocumentForm = new FormGroup({
@@ -83,6 +86,7 @@ export class DocumentEditorComponent implements OnInit {
       information: new FormControl(''),
       type: new FormControl('')
     }));
+    this.informationViewArray.push("text");
   }
 
   get packageOptions(): Array<FormArray> {
@@ -107,6 +111,12 @@ export class DocumentEditorComponent implements OnInit {
   public onSubmit(): void {
     this.dataService.addNewTexDocument(this.texDocumentForm.value);
     this.submitted.emit();
+  }
+
+  public onInformationTypeChanged(value: string, i: number): void {
+    if (value == 'creationDate') {
+      this.informationViewArray[i] = 'date';
+    }
   }
 
 }

@@ -69,20 +69,42 @@
             <h3>Additional Information</h3>
             <div formArrayName="informationArray" *ngFor="let item of informationArray.controls; let i = index">
                 <div formGroupName="{{i}}">
-                    <mat-form-field appearance="fill">
+                    <mat-form-field appearance="fill" *ngIf="informationViewArray[i] == 'text'">
                         <mat-label>
                             Information Content
                         </mat-label>
-                        <input matInput formControlName="information">
+                        <input
+                            
+                            matInput
+                            formControlName="information"
+                        >
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" *ngIf="informationViewArray[i] == 'date'">
+                        <input
+                            matInput
+                            [matDatepicker]="picker"
+                            placeholder="Choose a date"
+                            formControlName="information"
+                        >
+                        <mat-datepicker-toggle
+                            matSuffix
+                            [for]="picker">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker
+                            #picker
+                        ></mat-datepicker>
                     </mat-form-field>
                     <mat-form-field appearance="fill">
                         <mat-label>
                             Information Type
                         </mat-label>
-                        <mat-select formControlName="type">
+                        <mat-select
+                            formControlName="type"
+                            (selectionChange)="onInformationTypeChanged($event.value, i)"
+                        >
                             <mat-option
                                 *ngFor="let type of informationTypes"
-                                [(value)]="type"
+                                [value]="type"
                             >
                                 {{type}}
                             </mat-option>
