@@ -9,14 +9,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {MatTableModule} from '@angular/material/table';
-import {MatPaginatorModule} from '@angular/material'
-import {MatInputModule} from '@angular/material';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material'
+import { MatInputModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker'; 
+import { MatNativeDateModule } from '@angular/material/core';
+
 import { HttpClientModule } from '@angular/common/http';
 
 import { ExerciseCompilerComponent } from './exercise-compiler/exercise-compiler.component';
@@ -28,7 +33,7 @@ import { DocumentEditorComponent } from './document-editor/document-editor.compo
     ExplorerComponent,
     DetailviewComponent,
     ExerciseCompilerComponent,
-    DocumentEditorComponent
+    DocumentEditorComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,7 +49,11 @@ import { DocumentEditorComponent } from './document-editor/document-editor.compo
     MatPaginatorModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatTreeModule,
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [],
   bootstrap: [AppComponent]
