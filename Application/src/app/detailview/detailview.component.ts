@@ -11,20 +11,23 @@ export class DetailviewComponent implements OnInit {
 
   @Input() selectedDocument: TeXDocument;
 
+  packagesTree: Object;
+
   documentForm = new FormGroup({
     title: new FormControl(''),
     packages: new FormControl(''),
     keywords: new FormControl(''),
   })
 
-  constructor() {
-   }
+  constructor() { }
 
   ngOnInit() {
+    this.packagesTree = this.selectedDocument.getPackagesTree();
   }
 
   ngOnChange(change: SimpleChange) {
     console.log(change);
+    this.packagesTree = this.selectedDocument.getPackagesTree();
   }
 
   compile() {

@@ -24,11 +24,11 @@
     </div>
     
     <div>
-        <h4>Used packages:</h4>
-        <ul>
-            <li *ngFor="let package of selectedDocument.packages">{{package.name}}</li>
-            <li><button mat-raised-button color="accent" (click)="appendToArray($event)">Add</button></li>
-        </ul>
+        <h4>Packages:</h4>
+        <package-options-treeview
+            [treeData]="packagesTree"
+        >
+        </package-options-treeview>
     </div>
     
     <div style="width: 100%; display: inline-flex; justify-content: left; align-content: center;">

@@ -26,6 +26,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { ExerciseCompilerComponent } from './exercise-compiler/exercise-compiler.component';
 import { DocumentEditorComponent } from './document-editor/document-editor.component';
+import { PackageOptionsTreeviewComponent } from './components/package-options-treeview/package-options-treeview.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { DocumentEditorComponent } from './document-editor/document-editor.compo
     DetailviewComponent,
     ExerciseCompilerComponent,
     DocumentEditorComponent,
+    PackageOptionsTreeviewComponent
   ],
   imports: [
     BrowserModule,

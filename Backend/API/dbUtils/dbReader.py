@@ -239,7 +239,7 @@ class dbReader:
                         texDocumentEntry['packages'][str(i)]['optionsCount'] = optionsCount
                         for j in range(0, optionsCount):
                             packageOptionRow = self.getFirstRowByValue('packageOptions', 'id', relationRows[j]['optionId'])
-                            if type(packageOptionRow) == list:
+                            if type(packageOptionRow) == dict:
                                 texDocumentEntry['packages'][str(i)]['options'][str(j)] = packageOptionRow['option']
         texDocumentEntry['packagesCount'] = packagesCount
 

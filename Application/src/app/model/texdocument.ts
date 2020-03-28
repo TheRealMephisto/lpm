@@ -65,4 +65,11 @@ export class TeXDocument {
                             this.creationDate.getFullYear().toString());
     }
 
+    public getPackagesTree(): Object {
+        let object: Object = {};
+        for (let i = 0; i < this.packages.length; i++) {
+            object[this.packages[i].name] = this.packages[i].options;
+        }
+        return object;
+    }
 }

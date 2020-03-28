@@ -3,7 +3,11 @@ export class TeXPackage {
     options: Array<string>;
 
     constructor(name?: string, options?: Array<string>) {
-        this.name = name;
-        this.options = options;
+        if (name) {
+            this.name = name;
+        }
+        if (options) {
+            this.options = options;
+        }
     }
 }
