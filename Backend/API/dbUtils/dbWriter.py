@@ -41,15 +41,30 @@ class dbWriter:
         with dbReader(self.dbConnection) as db_reader:
             entryId = db_reader.getIdOfDataInTable(tableName, valueDict)
             if entryId == -1:
-                tableId = db_reader.getIdOfDataInTable('existingTables', {'tableName': tableName})
                 self.insertDataIntoTable(tableName, valueDict)
                 entryId = db_reader.getIdOfDataInTable(tableName, valueDict)
+
                 if self.userId is None:
                     if tableName == 'users':
                         self.userId = entryId
                     else:
                         protocol_message = 'No valid userId provided!'
-                self.insertDataIntoTable('editHistory', {'date': self.getCurrentSqlTimestamp(), 'userId':  self.userId, 'tableId': tableId, 'rowId': entryId, 'description': 'Added'})
+
+                self.insertDataIntoTable(
+                    'editHistory',
+                    {
+                        'date': self.getCurrentSqlTimestamp(),
+                        'userId':  self.userId,
+                        'tableId': db_reader.getIdOfDataInTable(
+                                        'existingTables',
+                                        {
+                                            'tableName': tableName
+                                        }
+                                    ),
+                        'rowId': entryId,
+                        'description': 'Added'
+                    }
+                )
                 protocol_message = 'Successfully added entry: ' + str(valueDict)
             else:
                 protocol_message = 'Entry existed already: ' + str(valueDict)
