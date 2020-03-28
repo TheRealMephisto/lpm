@@ -40,24 +40,7 @@ class dbReader:
     '''
     def getRowsByValue(self, tableName, key, value):
         command = "SELECT * from `" + tableName + "` WHERE `" + key + "` = '" + str(value) + "'"
-        # rawRows = self.dbConnection.execute_read_query(command)
-        # if type(rawRows) != list:
-        #     return -1
-
         return self.rawRowsToRows(tableName, self.dbConnection.execute_read_query(command))
-
-        # headers = self.getTableHeaders(tableName)
-        # if type(headers) != list:
-        #     return -1
-
-        # rows = list()
-
-        # for index_raw in range(0, len(rawRows)):
-        #     row = dict()
-        #     for index_header in range(0, len(headers)):
-        #         row[headers[index_header]] = rawRows[index_raw][index_header]
-        #     rows.append(row)
-        # return rows
 
     def getFirstRowByValue(self, tableName, key, value):
         rows = self.getRowsByValue(tableName, key, value)
