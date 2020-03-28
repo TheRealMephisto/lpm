@@ -156,7 +156,7 @@ class dbWriter:
 
                     # Add relation from package to package option
                     dataDictToAdd = {'packageId' : packageIds[i], 'optionId' : insertionOutput['entryId']}
-                    entryId = self.ensureEntryInTable(dataDictToAdd, 'packageRoption', [str(i), str(j)])
+                    self.ensureEntryInTable(dataDictToAdd, 'packageRoption', [str(i), str(j)])
 
         # Add file paths if not already existing
         fileIds = list()
@@ -167,20 +167,20 @@ class dbWriter:
 
         # Add contentRuser, contentRfile, contentRinformation and contentRpackages entry
         dataDictToAdd = {'contentId' : contentId, 'userId' : self.userId}
-        entryId = self.ensureEntryInTable(dataDictToAdd, 'contentRuser')
+        self.ensureEntryInTable(dataDictToAdd, 'contentRuser')
 
         for i in range(0, len(fileIds)):
             dataDictToAdd = {'contentId' : contentId, 'fileId' : fileIds[i]}
-            entryId = self.ensureEntryInTable(dataDictToAdd, 'contentRfile', [str(i)])
+            self.ensureEntryInTable(dataDictToAdd, 'contentRfile', [str(i)])
         
         for i in range(0, len(informationIds)):
             dataDictToAdd = {'contentId' : contentId, 'informationId' : informationIds[i]}
-            entryId = self.ensureEntryInTable(dataDictToAdd, 'contentRinformation', [str(i)])
+            self.ensureEntryInTable(dataDictToAdd, 'contentRinformation', [str(i)])
 
         for i in range(0, len(packageIds)):
             dataDictToAdd = {'contentId' : contentId, 'packageId' : packageIds[i]}
             with dbReader() as db_reader:
-                entryId = self.ensureEntryInTable(dataDictToAdd, 'contentRpackage', [str(i)])
+                self.ensureEntryInTable(dataDictToAdd, 'contentRpackage', [str(i)])
 
         self.dbConnection.commit()
 
