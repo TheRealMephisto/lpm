@@ -102,8 +102,6 @@ class dbWriter:
         dataDictToAdd = {'title' : title, 'path' : path}
         contentId = self.ensureEntryInTable(dataDictToAdd, 'contents')
 
-        
-        
         # Add information type and information if not already existing
         informationTypeIds = list()
         informationIds = list()
@@ -111,9 +109,6 @@ class dbWriter:
         if len(informationTypeList) != len(informationList):
             self.procedureProtocol['informationType'] = 'Error! informationList and informationTypeList must be of same length!'
             self.procedureProtocol['information'] = 'Error! informationList and informationTypeList must be of same length!'
-        else:
-            self.procedureProtocol['informationType'] = dict()
-            self.procedureProtocol['information'] = dict()
         for i in range(0, len(informationTypeList)):
             if informationTypeList[i] == 'creationDate':
                 creationDateProvided = True
