@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormControl, Validators, FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormControl, Validators, FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
 import { DataService } from '../data.service';
 
 /**
@@ -25,7 +25,7 @@ export class DocumentEditorComponent implements OnInit {
 
   ngOnInit() {
     this.texDocumentForm.get('author').setValue('devUser');
-    this.dataService.getInformationTypes().subscribe(data => {
+    this.dataService.getInformationTypes().subscribe(data => { // todo: handle observable inside data.service
       this.informationTypes = this.dataService.JsonToArray(data);
     });
   }
@@ -40,13 +40,13 @@ export class DocumentEditorComponent implements OnInit {
   });
 
   getErrorMessage(target: string): string {
-    let targetForm;
+    let targetForm: AbstractControl;
     switch(target) {
       case 'title':
-        targetForm = this.texDocumentForm.get('author');
+        targetForm = this.texDocumentForm.get('title');
         break;
       case 'path':
-        targetForm = this.texDocumentForm.get('author');
+        targetForm = this.texDocumentForm.get('path');
         break;
       case 'author':
         targetForm = this.texDocumentForm.get('author');
@@ -83,7 +83,6 @@ export class DocumentEditorComponent implements OnInit {
       information: new FormControl(''),
       type: new FormControl('')
     }));
-    console.log(this.informationArray);
   }
 
   get packageOptions(): Array<FormArray> {
@@ -99,7 +98,6 @@ export class DocumentEditorComponent implements OnInit {
       package: new FormControl(''),
       options: this.fb.array([])
     }));
-    console.log(this.packages);
   }
 
   public addOption(index: number): void {

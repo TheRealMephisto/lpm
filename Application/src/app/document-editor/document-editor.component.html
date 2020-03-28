@@ -79,8 +79,11 @@
                         <mat-label>
                             Information Type
                         </mat-label>
-                        <mat-select>
-                            <mat-option *ngFor="let type of informationTypes">
+                        <mat-select formControlName="type">
+                            <mat-option
+                                *ngFor="let type of informationTypes"
+                                [(value)]="type"
+                            >
                                 {{type}}
                             </mat-option>
                         </mat-select>

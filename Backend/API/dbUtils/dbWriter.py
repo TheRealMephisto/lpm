@@ -172,7 +172,7 @@ class dbWriter:
                 self.ensureEntryInTable(
                     {
                         'information' : informationList[i],
-                        'informationTypeId' : entryId
+                        'informationTypeId' : informationTypeIds[-1]
                     },
                     'information'
                 )

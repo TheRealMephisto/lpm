@@ -49,7 +49,9 @@ class dbReader:
     def getRowsByValues(self, tableName, key, valueList):
         rows = list()
         for value in valueList:
-            rows.extend(self.getRowsByValue(tableName, key, value))
+            moreRows = self.getRowsByValue(tableName, key, value)
+            if type(moreRows) is list:
+                rows.extend(moreRows)
         return rows
 
     def rawRowsToRows(self, tableName, rawRows):
@@ -129,7 +131,7 @@ class dbReader:
 
         informationTypes = list()
         for row in rows:
-            informationTypes.append(row['informationType'])
+            informationTypes.append(row['type'])
 
         return informationTypes
 
