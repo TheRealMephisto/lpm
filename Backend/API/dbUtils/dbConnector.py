@@ -43,6 +43,5 @@ class dbConnector:
         return -1
 
     def append_write_query(self, query):
-        print(query)
         self.dbCursor.execute(query)
         return

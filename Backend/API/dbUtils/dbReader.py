@@ -4,7 +4,6 @@ class dbReader:
 
     def __init__(self, dbConnection = None):
         if dbConnection != None:
-            print("I got a dbConnection sponsored, cool!")
             self.dbConnection = dbConnection
             self.connection_registered = False
         else:
