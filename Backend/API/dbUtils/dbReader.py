@@ -40,7 +40,22 @@ class dbReader:
     '''
     def getRowsByValue(self, tableName, key, value):
         command = "SELECT * from `" + tableName + "` WHERE `" + key + "` = '" + str(value) + "'"
-        return self.dbConnection.execute_read_query(command)
+        rawRows = self.dbConnection.execute_read_query(command)
+        if type(rawRows) != list:
+            return -1
+
+        headers = self.getTableHeaders(tableName)
+        if type(headers) != list:
+            return -1
+            
+        rows = list()
+
+        for index_raw in range(0, len(rawRows)):
+            row = dict()
+            for index_header in range(0, len(headers)):
+                row[headers[index_header]] = rawRows[index_raw][index_header]
+            rows.append(row)
+        return rows
 
     def getFirstRowByValue(self, tableName, key, value):
         rows = self.getRowsByValue(tableName, key, value)
@@ -76,7 +91,13 @@ class dbReader:
 
     def getTableHeaders(self, tableName):
         command = "DESCRIBE " + tableName + ";"
-        return self.dbConnection.execute_read_query(command)
+        result = self.dbConnection.execute_read_query(command)
+        if type(result) == list:
+            headers = list()
+            for i in range(0, len(result)):
+                headers.append(result[i][0])
+            return headers
+        return -1
 
     '''
         Retrive a list of values given a list of rows of a table and the specific column header
@@ -107,42 +128,51 @@ class dbReader:
         texDocumentEntry = dict()
         texDocumentEntry['contentId'] = contentId
 
-        rows = self.getRowsByValue('contents', 'id', contentId)
-        if rows == -1:
+        row = self.getFirstRowByValue('contents', 'id', contentId)
+        if type(row) != dict:
             return -1
-        row = rows[0]
-        texDocumentEntry['title'] = row[1]
-        texDocumentEntry['path'] = row[2]
+        texDocumentEntry['title'] = row['title']
+        texDocumentEntry['path'] = row['path']
 
-        # todo: get the user who created the content entry via editHistory table
-        index = self.getRowsByValue('contentRuser', 'contentId', contentId)
-        if index == -1:
+        # todo: get the user who created the content entry via editHistory table # proceeded here, check if finished!
+        userRow = self.getFirstRowByValue('contentRuser', 'contentId', contentId)
+        if type(userRow) != dict:
             return -2 # entry exists, but mandatory value is missing!
-        texDocumentEntry['username'] = self.getFirstRowByValue('users', 'id', index[0][2])[1]
 
+        userInfoRow = self.getFirstRowByValue('users', 'id', userRow['userId'])
+        if type(userInfoRow) != dict:
+            return -1
+        texDocumentEntry['username'] = userInfoRow['username']
+
+        # todo: comment this
         indices = list()
         rows = self.getRowsByValue('contentRfile', 'contentId', contentId)
-        if rows != -1:
+        if type(rows) == list:
             for row in rows:
-                indices.append(row[2])
+                indices.append(row['fileId'])
             texDocumentEntry['filePaths'] = dict()
             for i in range(0, len(indices)):
-                texDocumentEntry['filePaths'][str(i)] = self.getFirstRowByValue('files', 'id', indices[i])[1]
+                fileRow = self.getFirstRowByValue('files', 'id', indices[i])
+                if type(fileRow) == list:
+                    texDocumentEntry['filePaths'][str(i)] = fileRow['path']
 
         # get information
         texDocumentEntry['information'] = dict()
         informationCount = 0
         indices = list()
         rows = self.getRowsByValue('contentRinformation', 'contentId', contentId)
-        if rows != -1:
+        if type(rows) == list:
             for row in rows:
-                indices.append(row[2])
-            rows = self.getRowsByValues('information', 'id', indices)
-            informationCount = len(rows)
-            for i in range(0, informationCount):
-                texDocumentEntry['information'][str(i)] = dict()
-                texDocumentEntry['information'][str(i)]['information'] = rows[i][1]
-                texDocumentEntry['information'][str(i)]['type'] = self.getFirstRowByValue('informationType', 'id', rows[i][2])[1]
+                indices.append(row['informationId'])
+            informationRows = self.getRowsByValues('information', 'id', indices)
+            if type(informationRows) == list:
+                informationCount = len(informationRows)
+                for i in range(0, informationCount):
+                    texDocumentEntry['information'][str(i)] = dict()
+                    texDocumentEntry['information'][str(i)]['information'] = informationRows[i]['information']
+                    informationTypeRow = self.getFirstRowByValue('informationType', 'id', informationRows[i]['informationTypeId'])
+                    if type(informationTypeRow) == list:
+                        texDocumentEntry['information'][str(i)]['type'] = informationTypeRow['informationType']
         texDocumentEntry['informationCount'] = informationCount
 
         # get packages
@@ -150,41 +180,46 @@ class dbReader:
         packagesCount = 0
         indices = list() # indices will hold the indices of packages belonging to the content
         rows = self.getRowsByValue('contentRpackage', 'contentId', contentId)
-        if rows != -1:
+        if type(rows) == list:
             for row in rows:
-                indices.append(row[2])
-            rows = self.getRowsByValues('packages', 'id', indices)
-            packagesCount = len(rows)
-            for i in range(0, packagesCount):
-                texDocumentEntry['packages'][str(i)] = dict()
-                texDocumentEntry['packages'][str(i)]['package'] = rows[i][1]
-                relationRows = self.getRowsByValue('packageRoption', 'packageId', rows[i][0])
-                texDocumentEntry['packages'][str(i)]['options'] = dict()
-                optionsCount = len(relationRows)
-                texDocumentEntry['packages'][str(i)]['optionsCount'] = optionsCount
-                for j in range(0, optionsCount):
-                    texDocumentEntry['packages'][str(i)]['options'][str(j)] = self.getFirstRowByValue('packageOptions', 'id', relationRows[j][2])[1]
+                indices.append(row['packageId'])
+            packageRows = self.getRowsByValues('packages', 'id', indices)
+            if type(packageRows) == list:
+                packagesCount = len(packageRows)
+                for i in range(0, packagesCount):
+                    texDocumentEntry['packages'][str(i)] = dict()
+                    texDocumentEntry['packages'][str(i)]['package'] = packageRows[i]['package']
+                    relationRows = self.getRowsByValue('packageRoption', 'packageId', packageRows[i]['id'])
+                    if type(relationRows) == list:
+                        texDocumentEntry['packages'][str(i)]['options'] = dict()
+                        optionsCount = len(relationRows)
+                        texDocumentEntry['packages'][str(i)]['optionsCount'] = optionsCount
+                        for j in range(0, optionsCount):
+                            packageOptionRow = self.getFirstRowByValue('packageOptions', 'id', relationRows[j]['optionId'])
+                            if type(packageOptionRow) == list:
+                                texDocumentEntry['packages'][str(i)]['options'][str(j)] = packageOptionRow['option']
         texDocumentEntry['packagesCount'] = packagesCount
 
         # Get creation date
         foundCreationDate = False # flag to ensure a value for creation date!
         row = self.getFirstRowByValue('informationType', 'type', 'creationDate')
-        if row != -1:
-            creationDateInformationTypeId = row[0]
+        if type(row) == dict:
             anotherRow = self.getFirstRowByValue('contentRinformation', 'contentId', contentId)
-            if anotherRow != -1:
-                informationId = anotherRow[2]
+            if type(anotherRow) == dict():
                 keyAndValueDict = {
-                    'id': informationId,
-                    'informationTypeId': creationDateInformationTypeId
+                    'id': anotherRow['informationId'],
+                    'informationTypeId': row['id']
                 }
                 yetAnotherRow = self.getFirstRowByKeysAndValues('information', keyAndValueDict)
-                if yetAnotherRow != -1:
-                    texDocumentEntry['creationDate'] = yetAnotherRow[1]
+                if type(yetAnotherRow) == dict:
+                    texDocumentEntry['creationDate'] = yetAnotherRow['information']
                     foundCreationDate = True
         if not foundCreationDate:
-            contentTableId = self.getFirstRowByValue('existingTables', 'tableName', 'contents')[0]
-            texDocumentEntry['creationDate'] = self.getFirstRowByValue('editHistory', 'tableId', contentTableId)[1]
+            existingTableRow = self.getFirstRowByValue('existingTables', 'tableName', 'contents')
+            if type(existingTableRow) == dict:
+                editHistoryRow = self.getFirstRowByValue('editHistory', 'tableId', existingTableRow['id'])
+                if type(editHistoryRow) == dict:
+                    texDocumentEntry['creationDate'] = editHistoryRow['date']
 
         # Get keywords
         # row = getRowsByValue('contentRinformation', 'contentId', contentId)
@@ -192,19 +227,19 @@ class dbReader:
         #     informationIds = []
             # todo
 
-        row = self.getFirstRowByValue('informationType', 'type', 'keyword')
-        if row != -1:
-            keywordInformationTypeId = row[0]
-            anotherRow = self.getFirstRowByValue('contentRinformation', 'contentId', 'contentId')
-            if anotherRow != -1:
-                informationId = anotherRow[2]
-                keyAndValueDict = {
-                    'id': informationId,
-                    'informationTypeId': keywordInformationTypeId
-                }
-                yetAnotherRow = self.getFirstRowByKeysAndValues('information', keyAndValueDict)
-                if yetAnotherRow != -1:
-                    texDocumentEntry['key']
+        # row = self.getFirstRowByValue('informationType', 'type', 'keyword')
+        # if type(row) == dict:
+        #     keywordInformationTypeId = row['id']
+        #     anotherRow = self.getFirstRowByValue('contentRinformation', 'contentId', contentId)
+        #     if type(anotherRow) == dict:
+        #         informationId = anotherRow[2]
+        #         keyAndValueDict = {
+        #             'id': informationId,
+        #             'informationTypeId': keywordInformationTypeId
+        #         }
+        #         yetAnotherRow = self.getFirstRowByKeysAndValues('information', keyAndValueDict)
+        #         if yetAnotherRow != -1:
+        #             texDocumentEntry['key']
 
         self.dbConnection.commit()
 
@@ -227,6 +262,7 @@ class dbReader:
                 texDocumentEntries[str(i)] = candidate
                 totalResultCount += 1
             else:
-                break
+                texDocumentEntries[str(i)] = candidate # debugging purposes!
+                # break
         texDocumentEntries['totalResultCount'] = totalResultCount
         return texDocumentEntries
