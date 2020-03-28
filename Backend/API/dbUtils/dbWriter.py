@@ -69,7 +69,7 @@ class dbWriter:
             else:
                 protocol_message = 'Entry existed already: ' + str(valueDict)
         
-        self.procedureProtocol[tableName] = self.create_protocol_entry(protocol_message)
+        self.procedureProtocol[tableName] = self.create_protocol_entry(protocol_message, protocolDepthIdentifiers)
         
         return entryId
 
@@ -153,7 +153,7 @@ class dbWriter:
                 self.ensureEntryInTable(
                     {
                         'information' : self.getCurrentSqlTimestamp(),
-                        'informationTypeId' : entryId
+                        'informationTypeId' : informationTypeIds[-1]
                     },
                     'information'
                 )
@@ -213,7 +213,7 @@ class dbWriter:
                     self.ensureEntryInTable(
                         {
                             'packageId' : packageIds[i],
-                            'optionId' : insertionOutput['entryId']
+                            'optionId' : packageOptionIds[i][-1]
                         },
                         'packageRoption',
                         [str(i), str(j)]
