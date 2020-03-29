@@ -1,7 +1,7 @@
 # LPM_WebApp
 
 ## Requirements
-Webserve
+Webserver
 
 MySQL database
 
