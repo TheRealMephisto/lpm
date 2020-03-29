@@ -190,15 +190,20 @@ class dbReader:
         # get all information entries with one request, sort them afterwards
         informationRows = self.getInformationRows(contentId)
         typeMap = self.getInformationTypeMap()
-
+        
         availableInformation = dict()
         if type(informationRows) is list:
             typeIds = list()
-            for i in range(0, len(informationRows)):
-                if typeMap[informationRows[i]['informationTypeId']] not in availableInformation.keys():
-                    availableInformation[typeMap[informationRows[i]['informationTypeId']]] = dict()
-                n = len(availableInformation[typeMap[informationRows[i]['informationTypeId']]].keys())
-                availableInformation[typeMap[informationRows[i]['informationTypeId']]][str(n)] = informationRows[i]['information']
+            n = 0
+            for i in range(0, len(informationRows)): # todo: increase efficiency!
+                typeIdentifier = typeMap[informationRows[i]['informationTypeId']]
+                if typeIdentifier not in availableInformation.keys():
+                    availableInformation[typeIdentifier] = dict()
+                # to do: split informationRows into subsets regarding their types, iterate over those subsets!
+                k = len(availableInformation[typeIdentifier].keys())
+                availableInformation[typeIdentifier][str(k)] = informationRows[i]['information']
+                availableInformation[typeIdentifier + 'Count'] = str(k+1)
+            
         
         # Get creation date
         if 'creationDate' in availableInformation.keys():
