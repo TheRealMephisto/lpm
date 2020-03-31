@@ -48,15 +48,20 @@ export class DataService {
       packages.push(new TeXPackage(packageName, packageOptions));
     }
 
+    let keywords: Array<string> = [];
+    for (let i = 0; i < dataEntry['keywordsCount']; i++) {
+      keywords.push(dataEntry['keywords'][i]);
+    }
+
     let texDocument: TeXDocument = new TeXDocument(
       "",
       dataEntry['title'],
-      0, // provide version, not information in JSON sent from API!
+      dataEntry['version'][0],
       new Date(dataEntry['creationDate']),
-      [""], // provide keywords, not information in JSON sent from API!
+      keywords,
       packages,
-      "",
-      ""
+      '',
+      ''
     );
     return texDocument;
   }
@@ -71,7 +76,9 @@ export class DataService {
     request.subscribe(data => {
       this.TexDocuments = [];
       for (let i = 1; i <= data['entries']['totalResultCount']; i++) {
-        this.TexDocuments.push(this.JsonToTeXDocument(data["entries"][i]));
+        if (data['entries'][i] != -1) {
+          this.TexDocuments.push(this.JsonToTeXDocument(data["entries"][i]));
+        }
       }
       this.subject.next(this.TexDocuments);
     });

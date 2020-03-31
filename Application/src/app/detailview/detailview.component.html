@@ -1,11 +1,6 @@
 
 <div class="detailview-container">
     <div>
-        <h4>Subject:</h4>
-        <p></p>
-    </div>
-        
-    <div>
         <h4>Title:</h4>
         <p>{{selectedDocument.title}}</p>
     </div>
@@ -14,12 +9,16 @@
         <h4>Version:</h4>
         <p>{{selectedDocument.version}}</p>
     </div>
+
+    <div>
+        <h4>Target Group:</h4>
+        <p>{{selectedDocument.targetGroupId}}</p>
+    </div>
     
     <div>
         <h4>Keywords:</h4>
         <ul>
             <li *ngFor="let keyword of selectedDocument.keywords">{{keyword}}</li>
-            <li><button mat-raised-button color="accent" (click)="appendToArray($event)">Add</button></li>
         </ul>
     </div>
     
@@ -32,17 +31,11 @@
     </div>
     
     <div style="width: 100%; display: inline-flex; justify-content: left; align-content: center;">
-        <h4>TeX-File:</h4>
-        <p>{{selectedDocument.rawDataPath}}</p>
+        <button mat-raised-button color="primary" (click)="openTexFile($event)">Open tex-file</button>
     </div>
+
     
-    <div style="width: 100%; display: inline-flex; justify-content: space-around;">
-        <button mat-mini-fab (click)="compile()"><mat-icon>build</mat-icon></button>
-        <p>Compile!</p>
-    </div>
-    
-    <div style="display: inline-flex; justify-content: space-around;">
-        <h4>PDF-File:</h4>
-        <p>{{selectedDocument.outputPath}}</p>
+    <div style="display: inline-flex; justify-content: space-around; margin-top: 5px;">
+        <button mat-raised-button color="primary" (click)="openPdfFile($event)">Open pdf-file</button>
     </div>
 </div>

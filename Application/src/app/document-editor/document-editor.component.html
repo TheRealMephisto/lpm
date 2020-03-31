@@ -4,21 +4,21 @@
         [formGroup]="texDocumentForm"
     >
         <div>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="fill" class="whole-width">
                 <mat-label>Title</mat-label>
                 <input matInput placeholder="Document title" formControlName="title" required>
                 <!-- <mat-error *ngIf="title.invalid">{{getErrorMessage('title')}}</mat-error> -->
             </mat-form-field>
         </div>
         <div>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="fill" class="whole-width">
                 <mat-label>Path</mat-label>
                 <input matInput placeholder="Document path" formControlName="path" required>
                 <!-- <mat-error *ngIf="path.invalid">{{getErrorMessage('path')}}</mat-error> -->
             </mat-form-field>
         </div>
         <div>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="fill" class="whole-width">
                 <mat-label>Author</mat-label>
                 <input matInput formControlName="author" required>
                 <!-- <mat-error *ngIf="author.invalid">{{getErrorMessage('author')}}</mat-error> -->
@@ -138,6 +138,11 @@
                 (click)="onSubmit()"
             >
                 Submit
+            </button>
+            <button mat-raised-button color="secondary"
+                (click)="onAbort()"
+            >
+                Abort
             </button>
         </div>
     </form>

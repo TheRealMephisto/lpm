@@ -27,7 +27,7 @@ export class DetailviewComponent implements OnInit {
 
   ngOnChange(change: SimpleChange) {
     console.log(change);
-    this.packagesTree = this.selectedDocument.getPackagesTree();
+    // this.packagesTree = this.selectedDocument.getPackagesTree();
   }
 
   compile() {

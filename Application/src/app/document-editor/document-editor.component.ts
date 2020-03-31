@@ -12,7 +12,8 @@ import { DataService } from '../data.service';
 })
 export class DocumentEditorComponent implements OnInit {
 
-  @Output() submitted: EventEmitter<any> = new EventEmitter<any>();
+  @Output() submitted: EventEmitter<void> = new EventEmitter<void>();
+  @Output() aborted: EventEmitter<void> = new EventEmitter<void>();
 
   public informationTypes: Array<string>;
 
@@ -111,6 +112,10 @@ export class DocumentEditorComponent implements OnInit {
   public onSubmit(): void {
     this.dataService.addNewTexDocument(this.texDocumentForm.value);
     this.submitted.emit();
+  }
+
+  public onAbort(): void {
+    this.aborted.emit();
   }
 
   public onInformationTypeChanged(value: string, i: number): void {
