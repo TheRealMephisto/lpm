@@ -32,7 +32,7 @@ export class AppComponent {
     this.viewEditor = true;
   }
 
-  public documentEdited() {
+  public finishedDocumentEdit() {
     this.viewEditor = false;
   }
 }

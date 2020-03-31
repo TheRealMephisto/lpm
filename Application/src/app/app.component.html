@@ -1,5 +1,5 @@
 <div class="container">
-  <h1>Title of the project</h1>
+  <h1>Title of your LaTeX project</h1>
 </div>
 
 <div class="container">
@@ -8,7 +8,9 @@
     </app-explorer>
   </div>
   <div *ngIf="viewEditor" class="e-container">
-    <app-document-editor (submitted)="documentEdited()"></app-document-editor>
+    <app-document-editor
+      (finished)="finishedDocumentEdit()"
+    ></app-document-editor>
   </div>
   
   <app-exercise-compiler *ngIf="viewCompiler" class="dv-container"></app-exercise-compiler>
@@ -27,5 +29,3 @@
     </div>
   </div>
 </div>
-
-<!--<router-outlet></router-outlet>-->
