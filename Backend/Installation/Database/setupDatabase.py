@@ -68,7 +68,7 @@ if __name__ == "__main__":
         "contents" : "CREATE TABLE contents (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), mainFileRefId INT)", # Info: mainFileRefId points to an entry in table "contentRfile", specifying the main tex file of this content
         "information" : "CREATE TABLE information (id INT AUTO_INCREMENT PRIMARY KEY, information TEXT, informationTypeId INT)",
         "informationType" : "CREATE TABLE informationType (id INT AUTO_INCREMENT PRIMARY KEY, type VARCHAR(255))",
-        "files" : "CREATE TABLE files (id INT AUTO_INCREMENT PRIMARY KEY, path TEXT, content TEXT)",
+        "files" : "CREATE TABLE files (id INT AUTO_INCREMENT PRIMARY KEY, path TEXT)",
         "contentRfile" : "CREATE TABLE contentRfile (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, fileId INT)",
         "contentRinformation" : "CREATE TABLE contentRinformation (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, informationId INT)",
         "contentRpackage" : "CREATE TABLE contentRpackage (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, packageId INT)",
