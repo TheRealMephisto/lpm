@@ -50,8 +50,8 @@ if __name__ == "__main__":
 
     mydb = mysql.connector.connect (
         host = "localhost",
-        user = "",
-        passwd = ""
+        user = "max",
+        passwd = "V#3$4mxQLnin.1"
     )
 
     mycursor = mydb.cursor()
@@ -65,10 +65,10 @@ if __name__ == "__main__":
 
     # Create tables if not already existing
     TablesToCreate = {
-        "contents" : "CREATE TABLE contents (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), path VARCHAR(255))",
+        "contents" : "CREATE TABLE contents (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), mainFileRefId INT)", # Info: mainFileRefId points to an entry in table "contentRfile", specifying the main tex file of this content
         "information" : "CREATE TABLE information (id INT AUTO_INCREMENT PRIMARY KEY, information TEXT, informationTypeId INT)",
         "informationType" : "CREATE TABLE informationType (id INT AUTO_INCREMENT PRIMARY KEY, type VARCHAR(255))",
-        "files" : "CREATE TABLE files (id INT AUTO_INCREMENT PRIMARY KEY, path TEXT)",
+        "files" : "CREATE TABLE files (id INT AUTO_INCREMENT PRIMARY KEY, path TEXT, content TEXT)",
         "contentRfile" : "CREATE TABLE contentRfile (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, fileId INT)",
         "contentRinformation" : "CREATE TABLE contentRinformation (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, informationId INT)",
         "contentRpackage" : "CREATE TABLE contentRpackage (id INT AUTO_INCREMENT PRIMARY KEY, contentId INT, packageId INT)",
@@ -85,6 +85,10 @@ if __name__ == "__main__":
 
     for key in TablesToCreate:
         insertDataIntoTable(mycursor, 'existingTables', {'tableName' : key})
+
+    informationTypes = ['creationDate', 'editDate', 'targetGroupId', 'version', 'keywords', 'useDate']
+    for infoType in informationTypes:
+        insertDataIntoTable(mycursor, 'informationType', {'type': infoType})
 
     mydb.commit()
     mydb.close()
