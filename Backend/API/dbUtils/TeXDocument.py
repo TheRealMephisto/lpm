@@ -8,10 +8,9 @@ class TeXDocument:
     # for the dev as information, from dbWriterclass ToDo: remove this before pushing to origin
     #def addTexDocumentEntry(self, title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList):
 
-    def __init__(self, title = "", filepath = "", filecontent = "", author = "", filePathList = list(), informationList = list(), informationTypeList = list(), packageList = list(), packageOptionsList = list()):
+    def __init__(self, title = "", filepath = "", author = "", filePathList = list(), informationList = list(), informationTypeList = list(), packageList = list(), packageOptionsList = list()):
         self.title = title
         self.filepath = filepath
-        self.filecontent = filecontent
         self.author = author
         self.filePathList = filePathList
         self.informationList = informationList
@@ -23,6 +22,17 @@ class TeXDocument:
 
         return
 
+    def __del__(self): # If I don't do this, the old lists will (strangely) be kept and just be appended later on
+        while len(self.filePathList) > 0:
+            self.filePathList.pop()
+        while len(self.informationList) > 0:
+            self.informationList.pop()
+        while len(self.informationTypeList) > 0:
+            self.informationTypeList.pop()
+        while len(self.packageList) > 0:
+            self.packageList.pop()
+        while len(self.packageOptionsList) > 0:
+            self.packageOptionsList.pop()
 
     def ensureMainFileinFilePathList(self):
         if not self.filepath in self.filePathList:
@@ -30,7 +40,7 @@ class TeXDocument:
         pass
 
     def isWritableToDatabase(self):
-        return true
+        return True
         
     '''
         Try to write to database, checking if writable before.
