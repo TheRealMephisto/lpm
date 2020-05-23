@@ -191,6 +191,19 @@ class dbReader:
         informationRows = self.getInformationRows(contentId)
         typeMap = self.getInformationTypeMap()
         
+        # availableTypes = list()
+        # for key, value in typeMap.iteritems():
+        #     availableTypes.append(value)
+
+        # def splitRowsIntoArray(rows, splitIdentifierArray):
+        #     splittedDict = dict()
+        #     for identifier in splitIdentifierArray:
+        #         splittedDict[identifier] = list()
+        #         for row in rows:
+        #             if identifier == typeMap[informationRows[i]['informationTypeId']]:
+        #                 splittedDict[identifier].append(informationRows[i]['information'])
+        #     return splittedDict
+
         availableInformation = dict()
         if type(informationRows) is list:
             typeIds = list()

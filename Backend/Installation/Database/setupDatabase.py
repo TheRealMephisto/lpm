@@ -50,8 +50,8 @@ if __name__ == "__main__":
 
     mydb = mysql.connector.connect (
         host = "localhost",
-        user = "max",
-        passwd = "V#3$4mxQLnin.1"
+        user = "",
+        passwd = ""
     )
 
     mycursor = mydb.cursor()

@@ -1,12 +1,16 @@
 from flask import Flask, request
-from flask_cors import CORS
+# from flask_cors import CORS
 import argumentHelper as argUtil
+
+import sys
+pathToLibraries = ''
+sys.path.append(pathToLibraries)
 
 from dbUtils.dbReader import dbReader
 from dbUtils.dbWriter import dbWriter
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}}) # intermediate, adjust for production! Just needed for development on local machine.
+# cors = CORS(app, resources={r"/api/*": {"origins": "*"}}) # intermediate, adjust for production! Just needed for development on local machine.
 
 @app.route("/")
 def index():

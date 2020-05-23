@@ -5,8 +5,9 @@ class dbConnector:
 
     def __init__(self):
         self.Host = "localhost"
-        self.user = ""
-        self.password = ""
+        # self.Host = "mysql" # for docker-compose
+        self.user = "max"
+        self.password = "V#3$4mxQLnin.1"
         self.database = "LPMdb"
         self.dbConnector = mysql.connector.connect (
                                 host = self.Host,

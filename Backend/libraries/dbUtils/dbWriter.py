@@ -1,5 +1,6 @@
 from dbUtils.dbConnector import dbConnector
 from dbUtils.dbReader import dbReader
+from dbUtils.TeXDocument import TeXDocument
 from datetime import datetime
 
 class dbWriter:
@@ -105,6 +106,9 @@ class dbWriter:
             packageOptionsList.append(item['options'])
         
         return self.addTexDocumentEntry(title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList)
+
+    def writeTexDocumentEntry(self, texdocument):
+        pass
 
 
     def addTexDocumentEntry(self, title, path, username, filePathList, informationList, informationTypeList, packageList, packageOptionsList):
