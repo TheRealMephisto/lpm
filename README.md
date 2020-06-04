@@ -14,6 +14,9 @@ An intuitive Web Interface providing the following features
 
 
 ### Requirements
+
+Docker
+
 Webserver
 
 MySQL database
