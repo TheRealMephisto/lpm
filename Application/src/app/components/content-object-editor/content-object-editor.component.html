@@ -1,0 +1,201 @@
+<form [formGroup]="contentObjectForm">
+    <div class="spinner-container" *ngIf="!isLoaded">
+        <mat-spinner></mat-spinner>
+    </div>
+    <div
+        class="mandatory-information-container"
+        *ngIf="isLoaded"
+    >
+        <h3>Mandatory information</h3>
+        <ul
+            class="editor-list"
+        >
+            <li
+                formArrayName="mandatory"
+                *ngFor="let control of mandatory.controls; let i = index"
+            >
+                <div formGroupName="{{i}}">
+                    <mat-form-field
+                        appearance="fill"
+                        *ngIf="control.controls.dataType.value == 'string'"
+                    >
+                        <mat-label>
+                            {{control.controls.label.value}}
+                        </mat-label>
+                        <input
+                            matInput
+                            formControlName="value"
+                        >
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="fill"
+                        *ngIf="control.controls.dataType.value == 'boolean'"
+                    >
+                        <mat-label>
+                            {{control.controls.label.value}}
+                        </mat-label>
+                        <mat-select
+                            formControlName="value"
+                        >
+                            <mat-option
+                                [value]="true"
+                            >
+                                true
+                            </mat-option>
+                            <mat-option
+                                [value]="false"
+                            >
+                                false
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="fill"
+                        *ngIf="control.controls.dataType.value == 'date'"
+                    >
+                        <mat-label>
+                            {{control.controls.label.value}}
+                        </mat-label>
+                        <input
+                            matInput
+                            [matDatepicker]="picker"
+                            placeholder="Choose a date"
+                            formControlName="value"
+                        >
+                        <mat-datepicker-toggle
+                            matSuffix
+                            [for]="picker">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker
+                            #picker
+                        ></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div
+        class="optional-information-container"
+    >
+        <h3>Optional Information</h3>
+        <ul
+            class="editor-list"
+        >
+            <li
+                formArrayName="optional"
+                *ngFor="let control of optional.controls; let i = index"
+            >
+                <div formGroupName="{{i}}">
+                    <mat-form-field
+                        appearance="fill"
+                        *ngIf="control.controls.dataType.value == 'string'"
+                    >
+                        <mat-label>
+                            {{control.controls.label.value}}
+                        </mat-label>
+                        <input
+                            matInput
+                            formControlName="value"
+                        >
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="fill"
+                        *ngIf="control.controls.dataType.value == 'boolean'"
+                    >
+                        <mat-label>
+                            {{control.controls.label.value}}
+                        </mat-label>
+                        <mat-select
+                            formControlName="value"
+                        >
+                            <mat-option
+                                [value]="true"
+                            >
+                                true
+                            </mat-option>
+                            <mat-option
+                                [value]="false"
+                            >
+                                false
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field
+                        appearance="fill"
+                        *ngIf="control.controls.dataType.value == 'date'"
+                    >
+                        <mat-label>
+                            {{control.controls.label.value}}
+                        </mat-label>
+                        <input
+                            matInput
+                            [matDatepicker]="picker"
+                            placeholder="Choose a date"
+                            formControlName="value"
+                        >
+                        <mat-datepicker-toggle
+                            matSuffix
+                            [for]="picker">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker
+                            #picker
+                        ></mat-datepicker>
+                    </mat-form-field>
+                    <button
+                        mat-raised-button
+                        color="secondary"
+                        type="button"
+                        (click)="removeInformation(i)"
+                    >
+                        Remove
+                    </button>
+                </div>
+            </li>
+            <li class="add-new-info">
+                <mat-select
+                    [(value)]="newInfo"
+                >
+                    <mat-option
+                        *ngFor="let info of infoToAdd"
+                        [value]="info"
+                    >
+                        {{info.label}}
+                    </mat-option>
+                </mat-select>
+                <button
+                    mat-raised-button
+                    color="secondary"
+                    (click)="addNewInformation()"
+                >
+                    Add
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div
+        *ngIf="finishButtonsDisabled"
+    >
+        <p>Processing ...</p>
+    </div>
+    <div
+        class="form-controls-container"
+        *ngIf="!finishButtonsDisabled"
+    >
+        <button 
+            mat-raised-button color="primary"
+            type="submit"
+            [disabled]="!contentObjectForm.valid || finishButtonsDisabled"
+            (click)="onSubmit()"
+        >
+            Submit
+        </button>
+        <button
+            mat-raised-button
+            color="secondary"
+            (click)="onAbort()"
+            [disabled]="finishButtonsDisabled"
+        >
+            Abort
+        </button>
+    </div>
+</form>

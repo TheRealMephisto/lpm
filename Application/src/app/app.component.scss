@@ -34,10 +34,10 @@
     padding: 1vh 1vw 1vh 1vw;
 }
 
-.nav-back {
+.headline {
     width: 100%;
     border-bottom: 1px solid $primary;
-    display: inline-grid;
-    grid-template-columns: 15% 85%;
+    display: flex;
     height: auto;
+    justify-content: space-between;
 }

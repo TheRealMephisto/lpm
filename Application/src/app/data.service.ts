@@ -1,26 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { TeXDocument } from './model/texdocument';
-import { TeXPackage } from './model/texpackage';
+import { InformationElement } from './model/informationElement';
+import { ApiSpecs } from './config/app-config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  url: string = 'http://127.0.0.1:1337/api';
+  url: string = ApiSpecs.uri;
 
   private TexDocuments: Array<TeXDocument>;
   public subject: BehaviorSubject<Array<TeXDocument>>;
+  
+  public TexDocumentSpecifications: Array<InformationElement>;
 
   constructor(private http: HttpClient) { 
     this.TexDocuments = [];
     this.subject = new BehaviorSubject(this.TexDocuments);
   }
 
-  public getInformationTypes(): Observable<Object> {
-    return this.http.get(this.url + '/getInformationTypes');
+  public getInformationTypeMap(): Observable<Object> {
+    return this.http.get(this.url + ApiSpecs.getInformationTypeMap);
+  }
+
+  public getContentObjectSpecifications(contentObjectType: string = "TexDocument"): Observable<Array<InformationElement>> {
+    return this.http.post(this.url + ApiSpecs.getContentObjectSpecifications, {"content_object_type": contentObjectType}).pipe(map(data => this.JsonToSpecificationArray(data["specifications"])));
+  }
+
+  public getInformationTypes(): Array<string> {
+    let informationTypes: Array<string> = [];
+
+    for (let spec of this.TexDocumentSpecifications) {
+      informationTypes.push(spec.label);
+    }
+
+    return informationTypes;
   }
 
   /**
@@ -31,64 +49,75 @@ export class DataService {
    */
   public JsonToArray(data: Object): Array<any> { // ToDo: make this generic!
     let outputArray: Array<any> = [];
-    for (let i = 0; i < data['totalResultCount']; i++) {
-      outputArray.push(data['entries'][i]);
+    for (let i = 0; i < data[ApiSpecs.dataKeys.totalResultCount]; i++) {
+      outputArray.push(data[ApiSpecs.dataKeys.entries][i]);
     }
     return outputArray;
   }
 
-  private JsonToTeXDocument(dataEntry: Object): TeXDocument {
-    let packages: Array<TeXPackage> = [];
-    for (let i = 0; i < dataEntry['packagesCount']; i++) {
-      let packageName: string = dataEntry['packages'][i]['package'];
-      let packageOptions: Array<string> = [];
-      for (let j = 0; j < dataEntry['packages'][i]['optionsCount']; j++) {
-        packageOptions.push(dataEntry['packages'][i]['options'][j]);
+  private JsonToSpecificationArray(data: Object): Array<InformationElement> {
+    let specsArray: Array<InformationElement> = [];
+
+    for (let key of Object.keys(data)) {
+      if (data[key]['label'] != 'Keywords' && data[key]['label'] != 'Packages') { //temporary! need to ship a version with some working features!
+        specsArray.push(new InformationElement(data[key]['label'], data[key]['dataType'], '', data[key]["mandatory"], data[key]["array"]));
       }
-      packages.push(new TeXPackage(packageName, packageOptions));
     }
 
-    let keywords: Array<string> = [];
-    for (let i = 0; i < dataEntry['keywordsCount']; i++) {
-      keywords.push(dataEntry['keywords'][i]);
-    }
-
-    let texDocument: TeXDocument = new TeXDocument(
-      "",
-      dataEntry['title'],
-      dataEntry['version'][0],
-      new Date(dataEntry['creationDate']),
-      keywords,
-      packages,
-      '',
-      ''
-    );
-    return texDocument;
+    return specsArray;
   }
 
-  public getTexDocumentEntries(startAt: number, maxResults: number): void {
+  public getTexDocumentSpecifications(): Observable<Array<InformationElement>> {
+    return this.http.get(this.url + ApiSpecs.getTexDocumentSpecifications).pipe(map(data => this.JsonToSpecificationArray(data)));
+  }
+
+  public getTexDocumentEntries(pageIndex: number = 1, pageSize: number = 5, filterValue: string = ""): Observable<Object> {
+    let startAt: number = pageIndex * pageSize + 1;
+    let maxResults: number = pageSize;
+    if (typeof(filterValue) != "string") {
+      console.warn("filterValue only accepts values of type string! Setting filterValue to the empty string.")
+      filterValue = ""
+    }
     let params: HttpParams = new HttpParams()
                                 .set('startAt', startAt.toString())
-                                .set('maxResults', maxResults.toString());
-    let request = this.http.get(this.url + '/getTexDocumentEntries', {
+                                .set('maxResults', maxResults.toString())
+                                .set('filterValue', filterValue);
+    return this.http.get(this.url + ApiSpecs.getTexDocumentEntries,  {
       params: params
-    });
-    request.subscribe(data => {
-      this.TexDocuments = [];
-      for (let i = 1; i <= data['entries']['totalResultCount']; i++) {
-        if (data['entries'][i] != -1) {
-          this.TexDocuments.push(this.JsonToTeXDocument(data["entries"][i]));
-        }
-      }
-      this.subject.next(this.TexDocuments);
-    });
-    return;
+                        }).pipe(map(res => {
+                          return res['entries'];
+                        }));
   }
 
-  public addNewTexDocument(formData: FormData): void {
-    let obs = this.http.post(this.url + '/addTexDocumentEntry', formData);
+  public addNewTexDocument(formData: FormData): Observable<Object> {
+    return this.http.post(this.url + ApiSpecs.addTexDocumentEntry, formData);
+  }
+
+  public addNewContentObject(formData: FormData, contentObjectType: string): Observable<boolean> {
+    return this.http.post(this.url + ApiSpecs.addContentObject, {
+      formData: formData,
+      type: contentObjectType,
+      user: "admin"
+    }).pipe(map(answer => {
+      return answer["success"];
+    }));
+  }
+
+  public editTexDocument(formData: FormData): void {
+    let obs = this.http.post(this.url + ApiSpecs.editTexDocumentEntry, formData);
     obs.subscribe(data => {
       console.log(data);
     });
+  }
+
+  public editContentObject(formData: FormData, contentObjectType: string, Id: number): Observable<boolean> {
+    return this.http.post(this.url + ApiSpecs.editContentObject, {
+      formData: formData,
+      Id: Id,
+      type: contentObjectType,
+      user: "admin"
+    }).pipe(map(answer => {
+      return answer["success"];
+    }));
   }
 }

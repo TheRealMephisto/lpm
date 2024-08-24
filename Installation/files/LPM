@@ -1,0 +1,57 @@
+##
+# You should look at the following URL's in order to grasp a solid understanding
+# of Nginx configuration files in order to fully unleash the power of Nginx.
+# https://www.nginx.com/resources/wiki/start/
+# https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/
+# https://wiki.debian.org/Nginx/DirectoryStructure
+#
+# In most cases, administrators will remove this file from sites-enabled/ and
+# leave it as reference inside of sites-available where it will continue to be
+# updated by the nginx packaging team.
+#
+# This file will automatically load configuration files provided by other
+# applications, such as Drupal or Wordpress. These applications will be made
+# available underneath a path with that package name, such as /drupal8.
+#
+# Please see /usr/share/doc/nginx-doc/examples/ for more detailed examples.
+##
+
+# Default server configuration
+#
+server {
+	listen 80;
+	listen [::]:80;
+	# ToDo: replace by string from config file / tool
+	server_name localhost;
+	return 302 https://$server_name$request_uri;
+}
+
+server {
+
+	listen 443 ssl http2;
+	listen [::]:443 ssl http2;
+	include snippets/self-signed.conf;
+	include snippets/ssl-params.conf;
+
+	# ToDo: Replace by better authentication tool
+	# Basic Authentication:
+	# ToDo: replace by string from config file / tool
+	auth_basic	"LaTeX Project Manager";
+	auth_basic_user_file	.htpasswd;
+	
+	# ToDo: replace by string from config file / tool
+	server_name localhost;
+	
+
+	location / {
+		root /var/www/LPM;
+		# First attempt to serve request as file, then
+		# as directory, then fall back to displaying a 404.
+		try_files $uri $uri/ =404;
+	}
+	
+	location /api {
+		include uwsgi_params;
+		uwsgi_pass unix:/tmp/LPM_API.sock;
+	}
+}

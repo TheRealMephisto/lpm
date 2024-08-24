@@ -7,28 +7,32 @@ import { TeXDocument } from './model/texdocument';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Application';
+  # ToDo: use a string from a configuration file instead
+  title = 'LaTeX Project Manager';
 
-  selectedDoc: TeXDocument;
+  public selectedDoc: TeXDocument = undefined;
 
-  viewCompiler: boolean;
-  viewEditor: boolean;
+  public viewCompiler: boolean;
+  public viewEditor: boolean;
 
   ngOnInit() {
     this.viewCompiler = true;
     this.viewEditor = false;
   }
 
-  public selectDocument(event) {
+  public selectionChanged(event) {
     this.selectedDoc = event;
-    this.viewCompiler = false;
+    this.viewCompiler = !this.selectedDoc;
   }
 
   public backToCompiler() {
     this.viewCompiler = true;
   }
 
-  public showEditor() {
+  public showEditor(neu: string = '') {
+    if (neu == 'new') {
+      this.selectedDoc = undefined;
+    }
     this.viewEditor = true;
   }
 

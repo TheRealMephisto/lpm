@@ -1,27 +1,26 @@
-# LPM_WebApp
+# LPM - LaTeX Project Manager
 
-## Vision
+## Installation
 
-An intuitive Web Interface providing the following features 
+ - Set up your database (e.g mariadb) and provide a user and a database with Permission to create tables inside that database
+ - Install nginx and copy the config files found in /Installation/files into their place
+ - execute installApi.sh, installConfigs.sh, installLibraries.sh
+ - execute "npm run build --prod" in /Application, then copy the compiled application into the webdirectory for nginx to serve
 
-- Easy access to the information of all the LaTeX documents in your project (in progress)
+## Needed software:
 
-- Filter through them, view the detailed information (in progress)
+### Python packages to be installed in the virtualenv
+ - configparser
+ - mysql-connector
+ - flask
+ - uwsgi
 
-- Add new documents (in progress)
+ ### Tipps:
 
-- Compile documents together in one document (future)
-
-
-### Requirements
-
-Docker
-
-Webserver
-
-MySQL database
-
-Python
-
-### Dependencies
-This project was created using Python version 3.7.3 and Angular Cli 8.3.25.
+ - Setting up database and user:
+    
+    Create database and user
+    CREATE DATABASE LPMdb;
+    CREATE USER 'LPMdbUSER'@'localhost' IDENTIFIED BY '...';
+    GRANT ALL PRIVILEGES ON LPMdb.* TO 'LPMdbUSER'@'localhost';
+    FLUSH PRIVILEGES;

@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve LPM_API
+After=network.target
+
+[Service]
+User=lpm
+Group=lpm
+WorkingDirectory=/etc/lpm/API
+Environment="PATH=/etc/lpm/API/LPM_API/bin"
+ExecStart=/etc/lpm/API/LPM_API/bin/uwsgi --ini LPM_API.ini
+
+[Install]
+WantedBy=multi-user.target

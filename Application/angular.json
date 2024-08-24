@@ -24,7 +24,12 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/ngx-extended-pdf-viewer/assets/",
+                "output": "/assets/"
+              }
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
@@ -135,6 +140,41 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "ngx-foundation": {
+      "projectType": "library",
+      "root": "projects/ngx-foundation",
+      "sourceRoot": "projects/ngx-foundation/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngx-foundation/tsconfig.lib.json",
+            "project": "projects/ngx-foundation/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-foundation/src/test.ts",
+            "tsConfig": "projects/ngx-foundation/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-foundation/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-foundation/tsconfig.lib.json",
+              "projects/ngx-foundation/tsconfig.spec.json"
+            ],
             "exclude": [
               "**/node_modules/**"
             ]

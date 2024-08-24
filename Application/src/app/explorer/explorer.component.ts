@@ -1,12 +1,30 @@
-import { Component, OnInit, ViewChild, Output, Input, EventEmitter, SimpleChange, ChangeDetectorRef } from '@angular/core';
-
+import {
+  Component,
+  OnInit,
+  OnChanges,
+  ViewChild,
+  Output,
+  Input,
+  EventEmitter,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
-import { trigger, state, style, animate, transition } from '@angular/animations';
-
+import {
+  MatPaginator,
+  PageEvent } from '@angular/material';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition } from '@angular/animations';
 import { TeXDocument } from '../model/texdocument';
 import { DataService } from '../data.service';
 import { Observable } from 'rxjs';
+import { ExplorerDataSource } from './explorer-data-source';
+
+// ToDo: For implementation of a loading indicator: https://blog.angular-university.io/angular-material-data-table/
 
 @Component({
   selector: 'app-explorer',
@@ -19,23 +37,32 @@ import { Observable } from 'rxjs';
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExplorerComponent implements OnInit {
+export class ExplorerComponent implements OnInit, OnChanges {
 
   @Input() selectedDocument: TeXDocument;
   @Output() selectedDocumentChange: EventEmitter<TeXDocument> = new EventEmitter<TeXDocument>();
   @Output() addDocument: EventEmitter<any> = new EventEmitter<any>();
 
-  explorerFormControl = new FormControl();
+  public pageSize: number = 5;
+
+  public currentPageIndex: number = 0;
+
+  public length: number;
+
+  public explorerFormControl = new FormControl();
 
   displayedColumns: string[] = ['title', 'version', 'creationDate'];
   dataSourceObs: Observable<Object>;
-  dataSource: MatTableDataSource<TeXDocument> = new MatTableDataSource<TeXDocument>();
+
+  public dataSource: ExplorerDataSource ;
+
   expandedElement: TeXDocument | null;
 
   selectedRow: TeXDocument | null;
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator; // static: true -> make it available during ngOnInit
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(
     private dataService: DataService,
@@ -43,28 +70,41 @@ export class ExplorerComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataService.subject.subscribe((TeXDocuments: Array<TeXDocument>) => {
-      this.dataSource = new MatTableDataSource<TeXDocument>(TeXDocuments);
+    this.dataSource = new ExplorerDataSource(this.dataService);
+    this.dataSource.TexDocuments$.subscribe(objects => {
+      this.changeSelection(objects[0]);
     });
-    this.dataService.getTexDocumentEntries(1, 3);
+    this.dataSource.loadTexDocuments(0);
+    this.dataSource.numberOfPages$.subscribe(n => {
+      this.length = n;
+      this.cdr.detectChanges();
+    });
   }
 
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-    console.log(filterValue);
+  applyFilter() {
+    this.executePaginationEvent(0, this.pageSize);
   }
 
-  ngOnChange(change: SimpleChange) {
-    console.log(change);
+  //  ngOnChanges(change: SimpleChanges) {
+    // console.log('Changes in explorer component: ', change);
+  //  }
+
+  public executePaginationEvent(pageIndex: number, pageSize: number): void {
+    this.currentPageIndex = pageIndex;
+    this.pageSize = pageSize;
+    this.dataSource.loadTexDocuments(pageIndex, pageSize, this.explorerFormControl.value);
+  }
+
+  public paginationEventHandler(event: PageEvent): void {
+    this.executePaginationEvent(event.pageIndex, event.pageSize)
   }
 
   public addDocumentTrigger() {
     this.addDocument.emit();
   }
 
-  public onClick(row: TeXDocument) {
-    this.selectedRow = this.selectedRow === row ? null : row;
+  public changeSelection(row: TeXDocument) {
+    this.selectedRow = (this.selectedRow === row) ? undefined : row;
     this.selectedDocumentChange.emit(this.selectedRow);
   }
 }

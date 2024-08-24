@@ -1,0 +1,25 @@
+<table>
+    <tbody>
+        <tr *ngFor="let item of items">
+            <td>
+                <strong>{{item.description}}</strong>
+            </td>
+            <td
+                *ngIf="!item.array"
+            >
+                {{item.value}}
+            </td>
+            <td
+                *ngIf="item.array"
+            >
+                <ul class="array-list">
+                    <li
+                        *ngFor="let value of item.value"
+                    >
+                        {{value}}
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>

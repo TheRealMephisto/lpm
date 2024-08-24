@@ -6,6 +6,7 @@ import { TreeviewDatabase } from './treeview-database';
 import { PackageFlatNode } from './package-flat-node';
 import { PackageNode } from './package-node';
 
+// ToDo: read through old documentation to check if this is stil needed and what to do with it
 // This code is mostly one of the examples avaible on the official angular material web page!
 // It probably needs some changes to adjust my specific needs!
 

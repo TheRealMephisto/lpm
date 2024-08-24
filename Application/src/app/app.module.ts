@@ -8,6 +8,7 @@ import { DetailviewComponent } from './detailview/detailview.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -21,12 +22,14 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker'; 
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material';
 
 import { HttpClientModule } from '@angular/common/http';
 
 import { ExerciseCompilerComponent } from './exercise-compiler/exercise-compiler.component';
-import { DocumentEditorComponent } from './document-editor/document-editor.component';
+import { ContentObjectEditorComponent } from './components/content-object-editor/content-object-editor.component';
 import { PackageOptionsTreeviewComponent } from './components/package-options-treeview/package-options-treeview.component';
+import { DescriptiveListComponent } from './components/descriptive-list/descriptive-list.component';
 
 @NgModule({
   declarations: [
@@ -34,8 +37,9 @@ import { PackageOptionsTreeviewComponent } from './components/package-options-tr
     ExplorerComponent,
     DetailviewComponent,
     ExerciseCompilerComponent,
-    DocumentEditorComponent,
-    PackageOptionsTreeviewComponent
+    ContentObjectEditorComponent,
+    PackageOptionsTreeviewComponent,
+    DescriptiveListComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +59,9 @@ import { PackageOptionsTreeviewComponent } from './components/package-options-tr
     MatTreeModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatProgressSpinnerModule,
+    NgxExtendedPdfViewerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DocumentEditorComponent } from './document-editor.component';
+import { DescriptiveListComponent } from './descriptive-list.component';
 
-describe('DocumentEditorComponent', () => {
-  let component: DocumentEditorComponent;
-  let fixture: ComponentFixture<DocumentEditorComponent>;
+describe('DescriptiveListComponent', () => {
+  let component: DescriptiveListComponent;
+  let fixture: ComponentFixture<DescriptiveListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DocumentEditorComponent ]
+      declarations: [ DescriptiveListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DocumentEditorComponent);
+    fixture = TestBed.createComponent(DescriptiveListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
